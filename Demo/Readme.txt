@@ -1,5 +1,5 @@
-动态链接库libxxx.so文件命名格式说明：
-lib 与 .so 前后缀 ：标准动态链接库格式
-hps3d ： 动态链接库名称，与设备名一致
-32/64：表示该动态链接库是32位或64位
-1710：表示该动态链接库版本号
+Dynamic link library libxxx.so file naming format description:
+Lib and .so suffixes: standard dynamic link library format
+Hps3d : dynamic link library name, consistent with device name
+32/64: Indicates that the dynamic link library is 32-bit or 64-bit.
+1710: indicates the dynamic link library version number
