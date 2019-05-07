@@ -1,0 +1,8 @@
+prefix=/mnt/hgfs/UbuntuShare/HPS3D_SDK_ROS_DEMO/install
+
+Name: hps_camera
+Description: Description of hps_camera
+Version: 0.0.0
+Cflags: -I/mnt/hgfs/UbuntuShare/HPS3D_SDK_ROS_DEMO/install/include
+Libs: -L/mnt/hgfs/UbuntuShare/HPS3D_SDK_ROS_DEMO/install/lib 
+Requires: message_runtime
