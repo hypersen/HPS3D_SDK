@@ -1,3 +1,3 @@
-All the dll files in this directory are the collections of the libraries that our HPS3D_SDK depends on. The usage is as follows:
-1. Copy the xxx.dll file directly to the C:\Windows\System32 directory.
-2. Enter regsvr32 xxx.dll in cmd and press Enter.
+该目录下所有dll文件为我司HPS3D_SDK所依赖的库的集合，使用方法如下：
+1、直接将xxx.dll文件复制到C:\Windows\System32目录下
+2、在cmd中输入regsvr32 xxx.dll后,回车即可

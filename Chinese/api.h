@@ -74,7 +74,7 @@ typedef double 			float64_t;
 /*	相机分辨率 */
 #define		RES_WIDTH			 (160)
 #define		RES_HEIGHT			 (60)
-#define		MAX_PIX_NUM 		 (9600) 						 /*RES_WIDTH * RES_HEIGHT*/
+#define		MAX_PIX_NUM 		 (9600)   /*RES_WIDTH * RES_HEIGHT*/
 
 /*指示当前像素点测量无效值及含义*/
 #define	 	LOW_AMPLITUDE   	(65300) 						/*信号幅值低*/
@@ -390,7 +390,7 @@ typedef struct
 	uint16_t dist_min_x;					/*不可用*/
 	uint16_t dist_min_y;					/*不可用*/
 	uint32_t frame_cnt;						/*帧计数器*/
-	uint16_t distance[MAX_PIX_NUM];			/*深度数据，按顺序储存*/
+	uint16_t *distance;						/*深度数据，按顺序储存*/
 }FullRoiDataTypeDef;
 
 /*深度图数据*/
@@ -406,7 +406,7 @@ typedef struct
 	int16_t temperature;					/*相机当前温度参考值*/
 	uint16_t frame_cnt;						/*帧计数器，可用于丢帧检测*/
 	uint16_t interference_num; 				/*不可用*/
-	uint16_t distance[MAX_PIX_NUM];			/*深度数据，按顺序储存，当输出数据类型为 @see PACKET_SIMPLE时不可用*/
+	uint16_t *distance;						/*深度数据，按顺序储存，当输出数据类型为 @see PACKET_SIMPLE时不可用*/
 }DepthDataTypeDef;
 
 
@@ -420,7 +420,7 @@ typedef struct
 /*有序点云数据*/
 typedef struct
 {
-	PerPointCloudDataTypeDef point_data[MAX_PIX_NUM];
+	PerPointCloudDataTypeDef *point_data;
 	uint16_t width;
 	uint16_t height;
 	uint32_t points;
@@ -451,7 +451,7 @@ typedef struct
 	PerPointCloudDataTypeDef UpperPoint;
 	PerPointCloudDataTypeDef UnderPoint;
 	PerPointCloudDataTypeDef MinPoint;
-	PerPointCloudDataTypeDef PixelBuffer[MAX_PIX_NUM];   /*保存障碍物所有像素点信息*/
+	PerPointCloudDataTypeDef *PixelBuffer;   /*保存障碍物所有像素点信息*/
 }ObstacleDataTypedef;
 
 /*避障参数结构体*/

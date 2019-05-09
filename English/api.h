@@ -387,7 +387,7 @@ typedef struct
 	uint16_t dist_min_x;					/*Unavailable*/
 	uint16_t dist_min_y;					/*Unavailable*/
 	uint32_t frame_cnt;						/*Frame counter*/
-	uint16_t distance[MAX_PIX_NUM];			/*Depth data, store in order*/
+	uint16_t *distance;						/*Depth data, store in order*/
 }FullRoiDataTypeDef;
 
 /*Depth data*/
@@ -403,7 +403,7 @@ typedef struct
 	int16_t temperature;					/*Camera current reference temperature*/
 	uint16_t frame_cnt;						/*Frame counter,can be used for frame loss detection*/
 	uint16_t interference_num; 				/*Unavailable*/
-	uint16_t distance[MAX_PIX_NUM];			/*Depth data, store in order, not available when the output data type is @see PACKET_SIMPLE*/
+	uint16_t *distance;						/*Depth data, store in order, not available when the output data type is @see PACKET_SIMPLE*/
 }DepthDataTypeDef;
 
 
@@ -448,7 +448,7 @@ typedef struct
 	PerPointCloudDataTypeDef UpperPoint;
 	PerPointCloudDataTypeDef UnderPoint;
 	PerPointCloudDataTypeDef MinPoint;
-	PerPointCloudDataTypeDef PixelBuffer[MAX_PIX_NUM];   /*Save all pixel information for obstacles*/
+	PerPointCloudDataTypeDef *PixelBuffer;   /*Save all pixel information for obstacles*/
 }ObstacleDataTypedef;
 
 /*Obstacle avoidance parameter structure*/

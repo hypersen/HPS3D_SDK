@@ -63,43 +63,43 @@ typedef float 			float32_t;
 typedef double 			float64_t;
 
 /***********************************************************************************/
-/*用户可修改，参数直接影响到SDK内存占用，详细配置参考SDK手册(HPS3D_RM002) 四、多设备支持  */
-#define 	DEV_NUM 			 (10)							/*支持的设备数量*/
-#define     DEV_NAME_SIZE		 (20)							/*设备名长度*/
-#define 	ROI_NUM 			 (8)							/*ROI的数量*/
-#define 	OBSTACLE_NUM 		 (20)							/*支持障碍物数量*/
-#define 	OBSERVER_NUM  		 (10)							/*观察者数量*/
+/*User can modify the parameter,odify parameter values will affect the occupation of the SDK memory. Refer to SDK manual(HPS3D_RM002) for detail instructions. 4 Support mult-devices connection  */
+#define 	DEV_NUM 			 (10)							/*Device number supported*/
+#define     DEV_NAME_SIZE		 (20)							/*Device name size*/
+#define 	ROI_NUM 			 (8)							/*Number of ROI*/
+#define 	OBSTACLE_NUM 		 (20)							/*Number of obstacles supported*/
+#define 	OBSERVER_NUM  		 (10)							/*Number of observers*/
 /**********************************************************************************/
-/*内部使用参数请勿修改*/
-/*	相机分辨率 */
+/*Parameters for internal use only, do not modify*/
+/*	Camera resolution */
 #define		RES_WIDTH			 (160)
 #define		RES_HEIGHT			 (60)
-#define		MAX_PIX_NUM 		 (RES_WIDTH * RES_HEIGHT)
+#define		MAX_PIX_NUM 		 (9600)    /*RES_WIDTH * RES_HEIGHT*/
 
-/*指示当前像素点测量无效值及含义*/
-#define	 	LOW_AMPLITUDE   	(65300) 						/*信号幅值低*/
-#define	  	SATURATION 			(65400)     					/*饱和位饱和*/
-#define	 	ADC_OVERFLOW  		(65500)   						/*ADC溢出*/
-#define	 	INVALID_DATA 		(65530)    						/*无效数据*/
+/*Indicates the invalid data and meaning of current measuring pixel*/
+#define	 	LOW_AMPLITUDE   	(65300) 						/*Low amplitude*/
+#define	  	SATURATION 			(65400)     					/*Saturation*/
+#define	 	ADC_OVERFLOW  		(65500)   						/*ADC overflow*/
+#define	 	INVALID_DATA 		(65530)    						/*Indalid data*/
 /**********************************************************************************/
 
-/*函数返回的结果*/
+/*The result returned by the function*/
 typedef enum
 {
 	RET_OK 		= 0x01,
 	RET_ERROR 	= 0x02,
 	RET_BUSY 	= 0x03,
 	RET_CONNECT_FAILED,
-	RET_CREAT_PTHREAD_ERR,  /*线程创建失败*/
+	RET_CREAT_PTHREAD_ERR,  /*Thread creation failed*/
 	RET_WRITE_ERR,
 	RET_READ_ERR,
 	RET_PACKET_HEAD_ERR,
 	RET_PACKET_ERR,
-	RET_BUFF_EMPTY,			/*缓冲区为空或不可用*/
-	RET_VER_MISMATCH,  		/*相机固件版本与SDK版本不匹配*/
+	RET_BUFF_EMPTY,			/*Buffer is empty or unavailable*/
+	RET_VER_MISMATCH,  		/*Camera firmware version does not match SDK version*/
 }RET_StatusTypeDef;
 
-/*设备版本*/
+/*Device version*/
 typedef struct
 {
 	uint8_t year;
@@ -110,51 +110,51 @@ typedef struct
 	uint8_t rev;
 }Version_t;
 
-/*运行模式*/
+/*Run mode*/
 typedef enum
 {
 	MinOfRunModeType = 0,
-	RUN_IDLE = 0,			/*待机或停止测量*/
-	RUN_SINGLE_SHOT,		/*单次测量*/
-	RUN_CONTINUOUS,			/*连续测量*/
+	RUN_IDLE = 0,			/*Standby or stop measuring*/
+	RUN_SINGLE_SHOT,		/*Single measurement*/
+	RUN_CONTINUOUS,			/*Continuous measurement*/
 	NumberOfRunModeType
 }RunModeTypeDef;
 
-/*设置测量数据包类型*/
+/*Set measurement data package type*/
 typedef enum
 {
-	DEPTH_DATA_PACKET = 0x0,  /*深度数据包  @see DepthDataTypeDef*/
-	ROI_DATA_PACKET,		  /*ROI数据包  @see FullRoiDataTypeDef  @see SimpleRoiDataTypeDef*/
-	OBSTACLE_PACKE			  /*障碍物数据包  @see ObstacleDataTypedef*/
+	DEPTH_DATA_PACKET = 0x0,  /*Depth data packet  @see DepthDataTypeDef*/
+	ROI_DATA_PACKET,		  /*ROI data packet  @see FullRoiDataTypeDef  @see SimpleRoiDataTypeDef*/
+	OBSTACLE_PACKE			  /*Obstacle data type  @see ObstacleDataTypedef*/
 }MeasurePacketTypeDef;
 
 
-/*输出数据包的类型*/
+/*Output data packet type*/
 typedef enum
 {
-	PACKET_FULL = 0,		/*完整数据包（包含深度数据）*/
-	PACKET_SIMPLE			/*简单数据包（不包含深度数据）*/
+	PACKET_FULL = 0,		/*Full data packet(includes depth data)*/
+	PACKET_SIMPLE			/*Simple data packet(depth data not included*/
 }OutPacketTypeDef;
 
-/*ROI的阈值警报类型*/
+/*ROI threshold alarm type*/
 typedef enum
 {
-	ROI_ALARM_DISABLE = 0,  /*关闭ROI GPIO警报*/
-	ROI_ALARM_GPIO       	/*ROI警报类型为GPIO信号输出*/
+	ROI_ALARM_DISABLE = 0,  /* Disable ROI GPIO alam*/
+	ROI_ALARM_GPIO       	/*ROI alam type is GPIO signal output*/
 }ROIAlarmTypeDef;
 
-/*迟滞配置*/
+/*Hysteresis configuration*/
 typedef struct
 {
-	uint8_t threshold_id;  		    /*敏感区域阈值id*/
-	uint32_t threshold_value; 		/*敏感区域阈值*/
-	uint32_t hysteresis; 			/*迟滞大小*/
-	bool enable;					/*迟滞使能*/
-	bool positive;					/*true:正向比较，如果输入值大于阈值则返回True
-									false:反向比较，如果输入值小于阈值则返回False*/
+	uint8_t threshold_id;  		    /*ROI threshold id*/
+	uint32_t threshold_value; 		/*ROI threshold value*/
+	uint32_t hysteresis; 			/*Hysteresis value*/
+	bool enable;					/*Enable hysteresis*/
+	bool positive;					/*true:Positive comparison, return True if the input value is larger than the threshold
+									false:Reverse comparison, return False if the input value is smaller than the threshold*/
 }HysteresisSingleConfTypeDef;
 
-/*ROI的参考值类型*/
+/*ROI reference value type*/
 typedef enum
 {
 	ROI_REF_DIST_AVR = 1,
@@ -166,7 +166,7 @@ typedef enum
 	ROI_REF_THRESHOLD_PIX_NUM
 }ROIReferenceTypeDef;
 
-/*ROI配置的结构体*/
+/*ROI configured structure*/
  typedef struct
 {
 	bool enable;
@@ -176,52 +176,51 @@ typedef enum
 	uint16_t right_bottom_x;
 	uint16_t right_bottom_y;
 	HysteresisSingleConfTypeDef hysteresis_conf[3];
-	ROIReferenceTypeDef ref_type[3];					/*ROI的参考值类型,与hysteresis_conf一一对应*/
-	ROIAlarmTypeDef alarm_type[3];						/*ROI的阈值警报类型,与hysteresis_conf一一对应*/
-	uint16_t pixel_number_threshold[3];					/*超过阈值的像素点数阈值,与hysteresis_conf一一对应*/
+	ROIReferenceTypeDef ref_type[3];					/*ROI reference value type corresponds to hysteresis_conf*/
+	ROIAlarmTypeDef alarm_type[3];						/*ROI threshold alarm type corresponds to hysteresis_conf*/
+	uint16_t pixel_number_threshold[3];					/*Pixel number of over threshold corresponds to hysteresis_conf*/
 }ROIConfTypeDef;
 
-/*HDR模式*/
+/*HDR Mode*/
 typedef enum
 {
-	HDR_DISABLE = 0,				/*不建议使用*/
-	AUTO_HDR,						/*不建议使用*/
+	HDR_DISABLE = 0,				/*Not recommended for use*/
+	AUTO_HDR,						/*Not recommended for use*/
 	SUPER_HDR,
 	SIMPLE_HDR
 }HDRModeTypeDef;
 
-/*HDR配置*/
+/*HDR Configuration*/
 typedef struct
 {
 	HDRModeTypeDef hdr_mode;
-	float32_t qualtity_overexposed;				/*AUTO_HDR 曝光幅值  不建议使用该模式*/
-	float32_t qualtity_overexposed_serious;		/*AUTO_HDR 过度曝光赋值 不建议使用该模式*/
-	float32_t qualtity_weak;					/*AUTO_HDR 信号弱幅值 不建议使用该模式*/
-	float32_t qualtity_weak_serious;			/*AUTO_HDR 信号极弱幅值 不建议使用该模式*/
-	uint32_t simple_hdr_max_integration;		/*SIMPLE_HDR 最大积分时间 us*/
-	uint32_t simple_hdr_min_integration;		/*SIMPLE_HDR 最小积分时间 us*/
-	uint8_t super_hdr_frame_number;				/*SUPER_HDR 合成帧数*/
-	uint32_t super_hdr_max_integration;			/*SUPER_HDR 最大积分时间 us*/
-	uint32_t hdr_disable_integration_time;		/*HDR_DISABLE 手动积分时间 us 不建议使用该模式*/
+	float32_t qualtity_overexposed;				/*AUTO_HDR Overexposed amplitude, this mode is not recommended*/
+	float32_t qualtity_overexposed_serious;		/*AUTO_HDR Serious overexposed amplitude, this mode is not recommended*/
+	float32_t qualtity_weak;					/*AUTO_HDR Weak signal amplitude, this mode is not recommended*/
+	float32_t qualtity_weak_serious;			/*AUTO_HDR Serious weak signal amplitude, this mode is not recommended*/
+	uint32_t simple_hdr_max_integration;		/*SIMPLE_HDR Maximum integration time us*/
+	uint32_t simple_hdr_min_integration;		/*SIMPLE_HDR Minimum integration time us*/
+	uint8_t super_hdr_frame_number;				/*SUPER_HDR Synthetic frame numbe*/
+	uint32_t super_hdr_max_integration;			/*SUPER_HDR Maximum integration time us*/
+	uint32_t hdr_disable_integration_time;		/*HDR_DISABLE Manual integration time us this mode is not recommended*/
 }HDRConf;
 
-/*平滑滤波器的类型*/
+/*Smooth filter type*/
 typedef enum
 {
-	SMOOTH_FILTER_DISABLE = 0,		/*关闭平滑滤波器*/
-	SMOOTH_FILTER_AVERAGE = 1,		/*均值滤波器*/
-	SMOOTH_FILTER_GAUSS				/*高斯滤波器*/
+	SMOOTH_FILTER_DISABLE = 0,		/*Disalbe smooth filter*/
+	SMOOTH_FILTER_AVERAGE = 1,		/*Average filter*/
+	SMOOTH_FILTER_GAUSS				/*Gauss filter*/
 }SmoothFilterTypeDef;
 
-/*平滑滤波器的配置*/
+/*Smooth filter configuration*/
 typedef struct
 {
-	SmoothFilterTypeDef type;		/*平滑滤波器类型*/
-	uint32_t arg1;					/*滤波参数*/
+	SmoothFilterTypeDef type;		/*Smooth filter type*/
+	uint32_t arg1;					/*Filter parameter*/
 }SmoothFilterConfTypeDef;
 
-
-/*uart相关配置*/
+/*uart conifg param*/
 typedef enum
 {
 	UART_BAUDRATE_9600 = 9600,
@@ -251,7 +250,6 @@ typedef enum
 	UART_STOP_BITS2,
 }UartStopBitTypeDef;
 
-/*串口参数配置*/
 typedef struct
 {
 	UartBaudrateTypeDef baudrate;
@@ -259,32 +257,31 @@ typedef struct
 	UartStopBitTypeDef stop_bits;
 }UartConfTypeDef;
 
-
-/*GPIO配置的相关定义*/
-/*GPIO_OUT功能*/
+/*GPIO configuration definition*/
+/*GPIO_OUT function*/
 typedef enum
 {
-	GPOUT_FUNC_DISABLE = 0,				/*GPIO报警关闭*/
-	GPOUT_FUNC_ROI_THRESHOLD0_ALARM,	/*GPIO输出阈值0报警*/
-	GPOUT_FUNC_ROI_THRESHOLD1_ALARM,	/*GPIO输出阈值1报警*/
-	GPOUT_FUNC_ROI_THRESHOLD2_ALARM		/*GPIO输出阈值2报警*/
+	GPOUT_FUNC_DISABLE = 0,				/*GPIO alam disalbe*/
+	GPOUT_FUNC_ROI_THRESHOLD0_ALARM,	/*GPIO output threshold 0 alarm*/
+	GPOUT_FUNC_ROI_THRESHOLD1_ALARM,	/*GPIO output threshold 1 alarm*/
+	GPOUT_FUNC_ROI_THRESHOLD2_ALARM		/*GPIO output threshold 2 alarm*/
 }GPOutFunctionTypeDef;
 
-/*GPIO_IN功能*/
+/*GPIO_IN function*/
 typedef enum
 {
-	GPIN_FUNC_DISABLE = 0,			/*GPIO功能关闭*/
-	GPIN_FUNC_CAPTURE   			/*开启测量  注：开启测量后，则不受命令控制，只受IO输入控制*/
+	GPIN_FUNC_DISABLE = 0,			/*GPIO function disable*/
+	GPIN_FUNC_CAPTURE   			/*Start measuring. Note:After the measurement is turned on, it is not controlled by the command and is controlled only by the IO input.*/
 }GPInFunctionTypeDef;
 
-/*GPIO极性*/
+/*GPIO Polarity*/
 typedef enum
 {
 	GPIO_POLARITY_LOW = 0,
 	GPIO_POLARITY_HIGH
 }GPIOPolarityTypeDef;
 
-/*GPIO引脚*/
+/*GPIO Pin*/
 typedef enum
 {
     GPIN_1 = 1,
@@ -295,7 +292,7 @@ typedef enum
     GPOUT_3 = 12,
 }GPIOTypeDef;
 
-/*GPIO输出配置*/
+/*GPIO output configuration*/
 typedef struct
 {
 	GPIOTypeDef gpio;
@@ -303,7 +300,7 @@ typedef struct
 	GPOutFunctionTypeDef function;
 }GPIOOutConfTypeDef;
 
-/*GPIO输入配置*/
+/*GPIO input configuration*/
 typedef struct
 {
 	GPIOTypeDef gpio;
@@ -312,101 +309,101 @@ typedef struct
 }GPIOInConfTypeDef;
 
 
-/*深度滤波器类型*/
+/*Depth filter type*/
 typedef enum
 {
 	DISTANCE_FILTER_DISABLE = 0,
-	DISTANCE_FILTER_SIMPLE_KALMAN			/*简单卡尔曼滤波*/
+	DISTANCE_FILTER_SIMPLE_KALMAN			/*Simple Kalman filter*/
 }DistanceFilterTypeDef;
 
 typedef struct
 {
 	DistanceFilterTypeDef filter_type;		/*@see DistanceFilterTypeDef*/
-	float32_t kalman_K; 					/*比例系数K 建议值0.5*/
-	uint32_t kalman_threshold;				/*噪声阈值*/
-	uint32_t num_check;						/*阈值检查帧数,建议值2*/
+	float32_t kalman_K; 					/*Scaling factor K. recommended value 0.5*/
+	uint32_t kalman_threshold;				/*Noise threshold*/
+	uint32_t num_check;						/*Threshold check frame number, recommended value 2*/
 }DistanceFilterConfTypeDef;
 
-/*安装角度变换参数,旋转坐标系使用*/
+/*Installation angle change parameters, for rotating coordinate system use*/
 typedef struct
 {
-	bool enable;					/*安装角度使能*/
-	uint8_t angle_vertical;     	/*垂直方向安装角度（°）:主光轴与地垂线间的夹角*/
-	uint16_t height;				/*相对于地面的安装高度(mm)*/
+	bool enable;					/*Enable installation angle*/
+	uint8_t angle_vertical;     	/*Vertical installation angle（°）:The angle between the main optical axis and the ground perpendicula*/
+	uint16_t height;				/*Mounting height relative to the ground(mm)*/
 }MountingAngleParamTypeDef;
 
-/*返回的数据包类型*/
+/*Returned data packet type*/
 typedef enum
 {
-	NULL_PACKET = 0x00,				/*数据返回为空即无测量数据返回*/
-	SIMPLE_ROI_PACKET = 0x01,		/*简单ROI数据包（不含深度图数据）@see SimpleRoiDataTypeDef*/
-	FULL_ROI_PACKET,				/*完整ROI数据包（含深度图数据）@see FullRoiDataTypeDef*/
-	FULL_DEPTH_PACKET,				/*完整深度数据包（含深度图数据）@see DepthDataTypeDef*/
-	SIMPLE_DEPTH_PACKET,			/*简单深度数据包（不含深度图数据）@see DepthDataTypeDef*/
-	OBSTACLE_PACKET,				/*障碍物数据包  @see ObstacleDataTypedef*/
-    SYSTEM_ERROR					/*系统错误*/
+	NULL_PACKET = 0x00,				/*Data returns empty means no measurement data is returned*/
+	SIMPLE_ROI_PACKET = 0x01,		/*Simple ROI data packet(depth data not included @see SimpleRoiDataTypeDef*/
+	FULL_ROI_PACKET,				/*Full ROI packet(includes depth data)@see FullRoiDataTypeDef*/
+	FULL_DEPTH_PACKET,				/*Full depth data packet(includes depth data)@see DepthDataTypeDef*/
+	SIMPLE_DEPTH_PACKET,			/*Simple depth data packet(depth data not included)@see DepthDataTypeDef*/
+	OBSTACLE_PACKET,				/*Obstacle data packet @see ObstacleDataTypedef*/
+    SYSTEM_ERROR					/*System error*/
 }RetPacketTypedef;
 
-/*ROI简单数据包*/
+/*ROI simple data packet*/
 typedef struct
 {
-	uint8_t group_id;						/*组ID*/
+	uint8_t group_id;						/*group ID*/
 	uint8_t id;								/*ROI ID*/
-	uint16_t amplitude;						/*平均幅值*/
-	uint16_t valid_amplitude;				/*平均有效幅值*/
-	uint16_t distance_average;				/*平均距离值*/
-	uint16_t distance_max;					/*最大距离值*/
-	uint16_t distance_min;					/*最小距离值*/
-	uint16_t dist_max_x;					/*不可用*/
-	uint16_t dist_max_y;					/*不可用*/
-	uint16_t dist_min_x;					/*不可用*/
-	uint16_t dist_min_y;					/*不可用*/
-	uint16_t saturation_count;				/*饱和像素点数*/
-	uint8_t threshold_state;				/*报警状态指示位,当前测量值是否超出阈值:bit0:zone0, bit1:zone1, bit2:zone2*/
-	uint16_t out_of_threshold_pix_num[3];	/*[0]:超过thresold0的像素点数,[1]:...,[2]:...*/
-	uint16_t frame_cnt;						/*帧计数器*/
+	uint16_t amplitude;						/*average amplitude*/
+	uint16_t valid_amplitude;				/*average valid amplitude*/
+	uint16_t distance_average;				/*average distance*/
+	uint16_t distance_max;					/*maximum distance*/
+	uint16_t distance_min;					/*minimum distance*/
+	uint16_t dist_max_x;					/*Unavailable*/
+	uint16_t dist_max_y;					/*Unavailable*/
+	uint16_t dist_min_x;					/*Unavailable*/
+	uint16_t dist_min_y;					/*Unavailable*/
+	uint16_t saturation_count;				/*Number of saturated pixels*/
+	uint8_t threshold_state;				/*Alarm indicator, indicates if the current measured value exceeds the threshold :bit0:zone0, bit1:zone1, bit2:zone2*/
+	uint16_t out_of_threshold_pix_num[3];	/*[0]:pixel number exceed thresold0,[1]:...,[2]:...*/
+	uint16_t frame_cnt;						/*Frame counter*/
 }SimpleRoiDataTypeDef;
 
-/*完整ROI数据包*/
+/*Full ROI data packet*/
 typedef struct
 {
-	uint8_t roi_num;						/*ROI总数量*/
-	uint8_t group_id;						/*组ID*/
+	uint8_t roi_num;						/*ROI total number*/
+	uint8_t group_id;						/*group ID*/
 	uint8_t id;								/*ROI ID*/
-	uint16_t left_top_x;					/*左上角x坐标*/
-	uint16_t left_top_y;					/*左上角y坐标*/
-	uint16_t right_bottom_x;				/*右下角x坐标*/
-	uint16_t right_bottom_y;				/*右下角y坐标*/
-	uint32_t pixel_number;					/*ROI像素点*/
-	uint16_t amplitude;						/*平均幅值*/
-	uint16_t valid_amplitude;				/*平均有效幅值*/
-	uint16_t distance_average;				/*平均距离值*/
-	uint16_t distance_max;					/*不可用*/
-	uint16_t distance_min;					/*最小距离值*/
-	uint16_t saturation_count;				/*饱和像素点数*/
-	uint16_t threshold_state;				/*当前测量值是否超出阈值:bit0:zone0, bit1:zone1, bit2:zone2*/
-	uint16_t dist_max_x;					/*不可用*/
-	uint16_t dist_max_y;					/*不可用*/
-	uint16_t dist_min_x;					/*不可用*/
-	uint16_t dist_min_y;					/*不可用*/
-	uint32_t frame_cnt;						/*帧计数器*/
-	uint16_t distance[MAX_PIX_NUM];			/*深度数据，按顺序储存*/
+	uint16_t left_top_x;					/*Upper left corner x coordinate*/
+	uint16_t left_top_y;					/*Upper left corner y coordinate*/
+	uint16_t right_bottom_x;				/*Right lower corner x coordinate*/
+	uint16_t right_bottom_y;				/*Right lower corner y coordinate*/
+	uint32_t pixel_number;					/*ROI pixel number*/
+	uint16_t amplitude;						/*Average amplitude*/
+	uint16_t valid_amplitude;				/*Average valid amplitute*/
+	uint16_t distance_average;				/*Average distance*/
+	uint16_t distance_max;					/*Unavailable*/
+	uint16_t distance_min;					/*Minimum distance*/
+	uint16_t saturation_count;				/*Number of saturated pixels*/
+	uint16_t threshold_state;				/*if the current measured value exceeds the threshold:bit0:zone0, bit1:zone1, bit2:zone2*/
+	uint16_t dist_max_x;					/*Unavailable*/
+	uint16_t dist_max_y;					/*Unavailable*/
+	uint16_t dist_min_x;					/*Unavailable*/
+	uint16_t dist_min_y;					/*Unavailable*/
+	uint32_t frame_cnt;						/*Frame counter*/
+	uint16_t *distance;						/*Depth data, store in order*/
 }FullRoiDataTypeDef;
 
-/*深度图数据*/
+/*Depth data*/
 typedef struct
 {
-	uint16_t distance_average;				/*整个视野平均距离值*/
-	uint16_t amplitude_average;				/*有效幅值,不包含无效像素点*/
-	uint16_t amplitude_average_whole;		/*整个视野平均幅值*/
-	uint16_t amplitude_low_count;			/*低信号像素的数量*/
-	uint16_t saturation_count;				/*饱和像素点数*/
-	uint16_t distance_max;					/*不可用*/
-	uint16_t distance_min;					/*最小距离估算值*/
-	int16_t temperature;					/*相机当前温度参考值*/
-	uint16_t frame_cnt;						/*帧计数器，可用于丢帧检测*/
-	uint16_t interference_num; 				/*不可用*/
-	uint16_t distance[MAX_PIX_NUM];			/*深度数据，按顺序储存，当输出数据类型为 @see PACKET_SIMPLE时不可用*/
+	uint16_t distance_average;				/*Average distance value of the whole field of view*/
+	uint16_t amplitude_average;				/*Valid amplitude, invalid pixels not included*/
+	uint16_t amplitude_average_whole;		/*Average amplitude value of the whole field of view*/
+	uint16_t amplitude_low_count;			/*Number of low amplitute pixel*/
+	uint16_t saturation_count;				/*Number of saturated pixels*/
+	uint16_t distance_max;					/*Unavailable*/
+	uint16_t distance_min;					/*Minimum estimated distance*/
+	int16_t temperature;					/*Camera current reference temperature*/
+	uint16_t frame_cnt;						/*Frame counter,can be used for frame loss detection*/
+	uint16_t interference_num; 				/*Unavailable*/
+	uint16_t *distance;						/*Depth data, store in order, not available when the output data type is @see PACKET_SIMPLE*/
 }DepthDataTypeDef;
 
 
@@ -417,33 +414,33 @@ typedef struct
 	float32_t z;
 }PerPointCloudDataTypeDef;
 
-/*有序点云数据*/
+/*Ordered point cloud data*/
 typedef struct
 {
-	PerPointCloudDataTypeDef point_data[MAX_PIX_NUM];
+	PerPointCloudDataTypeDef *point_data;
 	uint16_t width;
 	uint16_t height;
 	uint32_t points;
 }PointCloudDataTypeDef;
 
-/*障碍物配置相关参数*/
+/*Obstacle configuration parameters*/
 typedef struct
 {
 	bool enable;
-	uint16_t frame_head; 			/*数据帧，帧头特征字节，例如0XEB81*/
-	uint8_t number;  				/*需要提取的障碍物数量 例如3*/
-	uint16_t vaild_min_dist; 		/*有效范围的最小距离值mm 例如 600*/
-	uint16_t vaild_max_dist; 		/*有效范围的最大距离值mm 例如 3500*/
-	uint16_t invaild_value;  		/*无效区域的固定参数值mm 例如 5000*/
-	uint16_t frame_size;			/*保存当前缓冲区有效字节数*/
+	uint16_t frame_head; 			/*Data frame, frame header feature byte, such as 0XEB81*/
+	uint8_t number;  				/*The number of obstacles that need to be extracted, for example 3*/
+	uint16_t vaild_min_dist; 		/*The minimum distance of the effective range in mm, for example 60*/
+	uint16_t vaild_max_dist; 		/*The maximum distance of the effective range in mm, for example 3500*/
+	uint16_t invaild_value;  		/*Fixed parameter value of invalid area in mm eg 5000*/
+	uint16_t frame_size;			/*Save the current buffer valid bytes*/
 }ObstacleConfigTypedef;
 
-/*障碍物数据*/
+/*Obstacle data*/
 typedef struct
 {
-	uint8_t ObstacleNumber;								/*障碍物的总数*/
-	uint8_t Id;											/*障碍物ID*/
-	uint32_t FrameCount;  								/*帧计数值*/
+	uint8_t ObstacleNumber;								/*Obstacle total number*/
+	uint8_t Id;											/*Obstacle ID*/
+	uint32_t FrameCount;  								/*Framce count value*/
 	uint16_t PixelNumber;
 	uint16_t DistanceAverage;
 	PerPointCloudDataTypeDef LeftPoint;
@@ -451,42 +448,42 @@ typedef struct
 	PerPointCloudDataTypeDef UpperPoint;
 	PerPointCloudDataTypeDef UnderPoint;
 	PerPointCloudDataTypeDef MinPoint;
-	PerPointCloudDataTypeDef PixelBuffer[MAX_PIX_NUM];   /*保存障碍物所有像素点信息*/
+	PerPointCloudDataTypeDef *PixelBuffer;   /*Save all pixel information for obstacles*/
 }ObstacleDataTypedef;
 
-/*避障参数结构体*/
+/*Obstacle avoidance parameter structure*/
 typedef struct
 {
 	bool avoidance_enable;
 	uint32_t avoidance_width;
 	uint32_t avoidance_height;
 	uint32_t avoidance_minDistance;
-	uint32_t avoidance_mountHeight; /*安装高度*/
-	uint32_t avoidance_pixelNumber; /*像素点阈值数量*/
-	bool avoidance_alarmStatues;    /*报警状态指示*/
-	GPIOOutConfTypeDef GpioOutConf; /*GPIO功能*/
+	uint32_t avoidance_mountHeight; /*Mount height*/
+	uint32_t avoidance_pixelNumber; /*Pixcel threshold number*/
+	bool avoidance_alarmStatues;    /*Alarm status*/
+	GPIOOutConfTypeDef GpioOutConf; /*GPIO function*/
 }AvoidanceTypeDef;
 
-/*结构体体封装结构体 用于数据的返回*/
+/*Data return*/
 typedef struct
 {
-	SimpleRoiDataTypeDef *simple_roi_data;		/*简单ROI数据包 @see SimpleRoiDataTypeDef*/
-	FullRoiDataTypeDef *full_roi_data;			/*完整ROI数据包 @see FullRoiDataTypeDef*/
-	DepthDataTypeDef *simple_depth_data;		/*简单深度图数据包  @see DepthDataTypeDef*/
-	DepthDataTypeDef *full_depth_data;			/*完整ROI数据包 @see DepthDataTypeDef*/
-	PointCloudDataTypeDef *point_cloud_data;	/*点云数据包 @see PointCloudDataTypeDef*/
-	ObstacleDataTypedef *Obstacle_data;			/*障碍物数据包 @see ObstacleDataTypedef*/
-	uint8_t *Obstacle_frame_data_buff; 			/*用于存放障碍物数据包的缓冲区*/
+	SimpleRoiDataTypeDef *simple_roi_data;		/*Simple ROI data packet @see SimpleRoiDataTypeDef*/
+	FullRoiDataTypeDef *full_roi_data;			/*Full ROI data packet @see FullRoiDataTypeDef*/
+	DepthDataTypeDef *simple_depth_data;		/*Simple depth data packet  @see DepthDataTypeDef*/
+	DepthDataTypeDef *full_depth_data;			/*Full ROI data packet @see DepthDataTypeDef*/
+	PointCloudDataTypeDef *point_cloud_data;	/*Point cloud data packet @see PointCloudDataTypeDef*/
+	ObstacleDataTypedef *Obstacle_data;			/*Obstacle data packet @see ObstacleDataTypedef*/
+	uint8_t *Obstacle_frame_data_buff; 			/*Buffer used to store obstacle data packet*/
 }MeasureDataTypeDef;
 
 
 typedef enum
 {
-	SYNC = 0x01,  						/*同步方式*/
-	ASYNC = 0x02 						/*异步方式*/
+	SYNC = 0x01,  						/*Synchronous mode*/
+	ASYNC = 0x02 						/*Asynchronous mode*/
 }HPS3D_SynchronousTypedef;
 
-/*传输类型*/
+/*Transport Type*/
 typedef enum
 {
 	TRANSPORT_USB = 0,
@@ -499,35 +496,35 @@ typedef enum
 /*handle*/
 typedef struct
 {
-	char *DeviceName; 					/*R/W 设备名*/
-	uint32_t DeviceFd; 					/*R   不可修改*/
-	uint8_t DeviceAddr; 				/*R   存放当前连接设备的设备地址(也是帧ID)*/
-	uint8_t ConnectionNumber;			/*R   不可修改*/
-	HPS3D_SynchronousTypedef SyncMode;  /*R   同步或异步方式*/
-	RunModeTypeDef RunMode;   			/*R/W 运行模式*/
-	MeasureDataTypeDef MeasureData;     /*R   同步测量数据,当异步方式时测量结果不会保存在此(可通过观察者对其操作)*/
-	RetPacketTypedef RetPacketType;     /*R   同步测量返回包类型,当异步方式时测量返回包类型结果不会保存在此(可通过观察者对其操作)*/
-	OutPacketTypeDef OutputPacketType; 	/*R   输出数据包类型,不可修改*/
-	bool ConnectStatus;  	 			/*R   连接状态,不可修改*/
-	uint8_t RoiNumber;					/*R   保存当前设备支持的ROI数量*/
-	uint8_t ThresholdNumber;			/*R   保存当前设备ROI支持的阈值数量*/
-	uint8_t ViewAngleHorizontal;  		/*R   水平方向视场角,不可修改*/
-	uint8_t ViewAngleVertical;			/*R   垂直方向视场角,不可修改*/
-	struct sockaddr_in ServerAddr;	    /*R/W 服务器IP地址及端口号*/
-	TransportTypeDef TransportType;     /*R   当前传输类型*/
+	char *DeviceName; 					/*R/W Device name*/
+	uint32_t DeviceFd; 					/*R   Not editable*/
+	uint8_t DeviceAddr; 				/*R   Store the device address (also the frame ID) of the currently connected device*/
+	uint8_t ConnectionNumber;			/*R   Not editable*/
+	HPS3D_SynchronousTypedef SyncMode;  /*R   Synchronous or asynchronous mode*/
+	RunModeTypeDef RunMode;   			/*R/W Run mode*/
+	MeasureDataTypeDef MeasureData;     /*R   Synchronous measurement data, when measured in asynchronous mode, the measurement results are not saved here (can be operated by the observer)*/
+	RetPacketTypedef RetPacketType;     /*R   Synchronous measurement returns the packet type. When the asynchronous mode is measured, the result of returning the packet type will not be saved here (can be operated by the observer)*/
+	OutPacketTypeDef OutputPacketType; 	/*R   Output packet type, not editable*/
+	bool ConnectStatus;  	 			/*R   Connect status, not editable*/
+	uint8_t RoiNumber;					/*R   Save the number of ROI supported by the device*/
+	uint8_t ThresholdNumber;			/*R   Save the number of threshold supported by the device ROI*/
+	uint8_t ViewAngleHorizontal;  		/*R   Horizontal view of angle, not editable*/
+	uint8_t ViewAngleVertical;			/*R   Vertical view of angle, no editable*/
+	struct sockaddr_in ServerAddr;	    /*R/W Sever ip address and port number*/
+	TransportTypeDef TransportType;     /*R   当Current transport type*/
 }HPS3D_HandleTypeDef;
 
-/*光学参数*/
+/*Optical parameters*/
 typedef struct
 {
-	bool enable;						/*光学参数使能（开启后，测量的深度数据为垂直距离）*/
-	uint8_t viewing_angle_horiz;    	/*水平方向可视角*/
-	uint8_t viewing_angle_vertical; 	/*垂直方向可视角*/
+	bool enable;						/*Optical parameters enable(Turn on and the measured depth data is the vertical distance)*/
+	uint8_t viewing_angle_horiz;    	/*Horizontal view of angle*/
+	uint8_t viewing_angle_vertical; 	/*Vertical view of angle*/
 	uint8_t illum_angle_horiz;
 	uint8_t illum_angle_vertical;
 }OpticalParamConfTypeDef;
 
-/*多机干扰的配置，不可用*/
+/*mult-devices mutual interference configuration, not editable*/
 typedef struct
 {
 	bool enable;
@@ -538,27 +535,27 @@ typedef struct
 }InterferenceDetectConfTypeDef;
 
 
-/*观察者模式详细请参考 https://www.cnblogs.com/luohanguo/p/7825656.html
+/*Details for observer mode, please refer to https://www.cnblogs.com/luohanguo/p/7825656.html
  * */
-/*观察者订阅事件*/
+/*Observer subscription event*/
 typedef enum
 {
-	ISubject_Event_DataRecvd = 0x01,	/*数据接收事件*/
-	ISubject_Event_DevConnect = 0x02,	/*连接事件*/
-	ISubject_Event_DevDisconnect = 0x03 /*断开连接事件*/
+	ISubject_Event_DataRecvd = 0x01,	/*Data receive event*/
+	ISubject_Event_DevConnect = 0x02,	/*Connect even*/
+	ISubject_Event_DevDisconnect = 0x03 /*Disconnect event*/
 }AsyncISubjectEvent;
 
-/*观察者订阅事件结构体参数*/
+/*Observer subscription event structure parameters*/
 typedef struct
 {
 	uint8_t ObserverID;
 	bool NotifyEnable;
-	AsyncISubjectEvent AsyncEvent; 		/*观察者订阅事件*/
-	MeasureDataTypeDef MeasureData; 	/*用于存放测量结果*/
-	RetPacketTypedef RetPacketType; 	/*测量返回包类型*/
+	AsyncISubjectEvent AsyncEvent; 		/*Observer subscription event*/
+	MeasureDataTypeDef MeasureData; 	/*To store measure data*/
+	RetPacketTypedef RetPacketType; 	/*Measure return packet type*/
 }AsyncIObserver_t;
 
-/*点云数据镜像*/
+/*Point cloud data mirror*/
 typedef enum
 {
 	MORROR_DISABLE = 0X0,
@@ -566,522 +563,523 @@ typedef enum
 	MIRROR_VERTICLA = 0X2,
 }PointCloudImageMirrorTypeDef;
 
-/**************************************函数接口*************************************/
+/**************************************Function interface*************************************/
 
-/***********************************1.命令函数接口***********************************/
+/***********************************1.Command function interface***********************************/
 /**
- * @brief	设置测量模式
+ * @brief	Set measured mode
  * @param[in]
- * @note    调用次函数前需要手动修改handle->RunMode值，
- * 			并且该函数需在设备初始化完成后才可使用，@see HPS3D_ConfigInit 后使用
- * @retval	成功返回 RET_OK
+ * @note    Manually modify the handle->RunMode value before calling this function，
+ * 			And this function works only after the device initialization is completed, @see HPS3D_ConfigInit
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_SetRunMode(HPS3D_HandleTypeDef *handle);
 
 /**
- * @brief	得到设备地址
- * @param[out]  handle->DeviceAddr  输出设备地址
- * @note    此设备地址也是帧ID
- * @retval	成功返回RET_OK
+ * @brief	Get device address
+ * @param[out]  handle->DeviceAddr  Output device address
+ * @note    Device address( also the frame ID)
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_GetDevAddr(HPS3D_HandleTypeDef *handle);
 
 /**
- * @brief	设置设备地址
- * @param[in]	handle->DeviceAddr   原设备地址
- * @param[in]	new_addr     		  新设备地址
- * @note	多台设备可通过修改此参数进行区分
- * @retval	成功返回 RET_OK
+ * @brief	Set device address
+ * @param[in]	handle->DeviceAddr   Old device address
+ * @param[in]	new_addr     		  New device address
+ * @note	Multiple devices can be distinguished by modifying this parameter
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_SetDevAddr(HPS3D_HandleTypeDef *handle, uint8_t new_addr);
 
 /**
- * @brief	获取设备版本信息
+ * @brief	Get device version information
  * @param[out]  version_t
- * @note	得到传感器固件版本信息参数
- * @retval	成功返回 RET_OK
+ * @note	Get device firmware version information
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_GetDeviceVersion(HPS3D_HandleTypeDef *handle, Version_t *version_t);
 
 /**
- * @brief	设定测量数据包类型
+ * @brief	Set measurer data packet type
  * @param[in]	type
- * @note	需在初始化@see HPS3D_ConfigInit 前进行该配置,默认为完整深度数据包
+ * @note	This configuration needs to be done before @see HPS3D_ConfigInit is initialized. The default is full depth packet
  * @see
  * @code
- * @retval	成功返回 RET_OK
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_SetMeasurePacketType(MeasurePacketTypeDef type);
 /**
- * @brief	获取测量数据包类型
+ * @brief	Get measure data packet type
  * @param
- * @note	默认为完整深度数据包
+ * @note	Default is full depth data packet
  * @see		MeasurePacketTypeDef
  * @code
- * @retval	返回类型枚举值
+ * @retval	Return type enumeration value
  */
 extern MeasurePacketTypeDef HPS3D_GetMeasurePacketType(void);
 
 
 /**
- * @brief	设定测量数据返回包类型(简单包或完整包)
+ * @brief	Set measure data return packet type(simple or full packet)
  * @param[in] outPacketType
- * @note    设定输出的数据包为简单数据包或完整数据包
+ * @note    Set output data packet as simple data packet or full data packet
  * @see		OutPacketTypeDef
- * @retval	成功返回 RET_OK
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_SetPacketType(HPS3D_HandleTypeDef *handle,OutPacketTypeDef outPacketType);
 
 /**
- * @brief	获取数据包类型
+ * @brief	Get data packet type
  * @param[out]	handle->PacketType
  * @note
  * @see		OutPacketTypeDef
- * @retval	成功返回 RET_OK
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_GetPacketType(HPS3D_HandleTypeDef *handle);
 
 
 /**
- * @brief	保存通信配置
- * @note	使用该函数后通信参数将永久生效，请牢记当前配置(慎重使用)
+ * @brief	Save conmmunication configuration
+ * @note	Communication parameters will take effect permanently after using this function, please keep in mind the current configuration (use with caution)
  * @see
  * @code
- * @retval	成功返回 RET_OK
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_SaveTransportConf(HPS3D_HandleTypeDef *handle);
 
 /**
- * @brief	保存到用户配置参数
+ * @brief	Save to user configuration parameters
  * @param
- * @note	该函数将使当前配置永久生效，可通过清除配置或回复出厂恢复默认配置
+ * @note	This function will make the current configuration permanent, and you can reset to the default configuration by clearing the configuration or reset factor setting
  * @see		HPS3D_ProfileClearCurrent HPS3D_ProfileRestoreFactory
- * @retval	成功返回 RET_OK
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_ProfileSaveToCurrent(HPS3D_HandleTypeDef *handle);
 
 /**
- * @brief	清除用户配置参数
+ * @brief	Clear user configuration parameters
  * @param
  * @note
- * @retval	成功返回 RET_OK
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_ProfileClearCurrent(HPS3D_HandleTypeDef *handle);
 
 /**
- * @brief	恢复出厂设置
+ * @brief	Reset factory setting
  * @param
  * @note
- * @retval	成功返回 RET_OK
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_ProfileRestoreFactory(HPS3D_HandleTypeDef *handle);
 
 /**
- * @brief	获得传输类型
+ * @brief	Get transport type
  * @param[out]	transport_type
  * @note
  * @see	TransportTypeDef
- * @retval	成功返回 RET_OK
+ * @retval	Return OK RET_OK
  * @see RET_StatusTypeDef
  */
 extern RET_StatusTypeDef HPS3D_GetTransportType(HPS3D_HandleTypeDef *handle, TransportTypeDef *transport_type);
 
 /**
- * @brief	选择ROI组
+ * @brief	Select ROI group
  * @param[in]	group_id
  * @note
- * @retval	成功返回 RET_OK
+ * @retval	Return OK RET_OK
  * @see RET_StatusTypeDef
  */
 extern RET_StatusTypeDef HPS3D_SelectROIGroup(HPS3D_HandleTypeDef *handle, uint8_t group_id);
 
 /**
- * @brief	获取当前ROI组ID
+ * @brief	Get current ROI group ID
  * @param[out]  group_id
  * @note
- * @retval  成功返回 RET_OK
+ * @retval  Return OK RET_OK
  * @see RET_StatusTypeDef
  */
 extern RET_StatusTypeDef HPS3D_GetROIGroupID(HPS3D_HandleTypeDef *handle, uint8_t *group_id);
 
 /**
- * @brief	设置ROI的警报类型
+ * @brief	Set ROI alarm type
  * @param[in]
  * @see ROIAlarmTypeDef
  * @note
- * @retval	成功返回 RET_OK @see RET_StatusTypeDef
+ * @retval	Return OK RET_OK @see RET_StatusTypeDef
  */
 extern RET_StatusTypeDef HPS3D_SetROIAlarmType(HPS3D_HandleTypeDef *handle, uint8_t roi_id, uint8_t threshold_id, ROIAlarmTypeDef roi_alarm_type);
 
 /**
- * @brief	设置ROI的参考值类型
+ * @brief	Set ROI reference type
  * @param[in]
  * @see ROIReferenceTypeDef
  * @note
- * @retval	成功返回 RET_OK @see RET_StatusTypeDef
+ * @retval	Return OK RET_OK @see RET_StatusTypeDef
  */
 extern RET_StatusTypeDef HPS3D_SetROIReferenceType(HPS3D_HandleTypeDef *handle, uint8_t roi_id, uint8_t threshold_id, ROIReferenceTypeDef ref_type);
 
 /**
- * @brief	设定ROI区域
+ * @brief	Set ROI area
  * @param[in]	roi_conf
  * @see ROIConfTypeDef
  * @note
- * @retval	成功返回 RET_OK @see RET_StatusTypeDef
+ * @retval	Return OK RET_OK @see RET_StatusTypeDef
  */
 extern RET_StatusTypeDef HPS3D_SetROIRegion(HPS3D_HandleTypeDef *handle, ROIConfTypeDef roi_conf);
 
 /**
- * @brief	设置ROI使能
+ * @brief	Set ROI enable
  * @param[in]	roi_id
  * @param[in]	en
  * @note
- * @retval	成功返回 RET_OK @see RET_StatusTypeDef
+ * @retval	Return OK RET_OK @see RET_StatusTypeDef
  */
 extern RET_StatusTypeDef HPS3D_SetROIEnable(HPS3D_HandleTypeDef *handle, uint32_t roi_id, bool en);
 
 /**
- * @brief	设置ROI阈值使能
+ * @brief	Set ROI threshold enable
  * @param[in]	roi_id
  * @param[in]	threshold_id
  * @param[in]	en
  * @note
- * @retval	成功返回 RET_OK @see RET_StatusTypeDef
+ * @retval	Return OK RET_OK @see RET_StatusTypeDef
  */
 extern RET_StatusTypeDef HPS3D_SetROIThresholdEnable(HPS3D_HandleTypeDef *handle, uint32_t roi_id, uint32_t threshold_id, bool en);
 
 /**
- * @brief	设置ROI阈值配置
+ * @brief	Set ROI threshold configuration
  * @param[in]	hysteresis_conf
  * @see HysteresisSingleConfTypeDef
  * @note
- * @retval	成功返回 RET_OK @see RET_StatusTypeDef
+ * @retval	Return OK RET_OK @see RET_StatusTypeDef
  */
 extern RET_StatusTypeDef HPS3D_SetROIThresholdConf(HPS3D_HandleTypeDef *handle, uint32_t roi_id, uint32_t threshold_id, uint16_t pix_num_threshold, HysteresisSingleConfTypeDef hysteresis_conf);
 
 /**
- * @brief	获取当前设备支持的ROI数量和阈值数量
+ * @brief	Get the number of ROIs and thresholds supported by the current device
  * @param[out]	roi_number
  * @param[out]	threshold_number
  * @note
- * @retval	成功返回 RET_OK @see RET_StatusTypeDef
+ * @retval	Return OK RET_OK @see RET_StatusTypeDef
  */
 extern RET_StatusTypeDef HPS3D_GetNumberOfROI(HPS3D_HandleTypeDef *handle, uint8_t *roi_number, uint8_t *threshold_number);
 
 /**
- * @brief	获取指定的ROI配置
+ * @brief	Get the specified ROI configuration
  * @param[out]	roi_conf
  * @see ROIConfTypeDef
  * @note
- * @retval	成功返回 RET_OK @see RET_StatusTypeDef
+ * @retval	Return OK RET_OK @see RET_StatusTypeDef
  */
 extern RET_StatusTypeDef HPS3D_GetROIConfById(HPS3D_HandleTypeDef *handle, uint8_t roi_id, ROIConfTypeDef *roi_conf);
 
 /**
- * @brief	设置指定的GPIO输出端口的配置
+ * @brief	Set the configuration of the specified GPIO output port
  * @param[in]	gpio_out_conf
  * @see GPIOOutConfTypeDef
- * @note        gpio_out_conf：只能配置IO输出
- * @retval	成功返回 RET_OK
+ * @note        gpio_out_conf：Can only configure IO output
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_SetGPIOOut(HPS3D_HandleTypeDef *handle, GPIOOutConfTypeDef gpio_out_conf);
 
 /**
- * @brief	获取指定GPIO输出端口的配置
+ * @brief	Get the configuration of the specified GPIO output port
  * @param[in]	gpio_out_conf
  * @see GPIOOutConfTypeDef
  * @note
- * @retval	成功返回 RET_OK
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_GetGPIOOutConf(HPS3D_HandleTypeDef *handle, GPIOOutConfTypeDef *gpio_out_conf);
 
 /**
- * @brief	设置指定的GPIO输入端口的配置
+ * @brief	Set the configuration of the specified GPIO input port
  * @param[in]	gpio_in_conf
  * @see GPIOInConfTypeDef
- * @note	gpio_in_conf：只能配置IO输入
- * @retval	成功返回 RET_OK
+ * @note	gpio_in_conf：Can only configure IO input
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_SetGPIOIn(HPS3D_HandleTypeDef *handle, GPIOInConfTypeDef gpio_in_conf);
 
 /**
- * @brief	获取指定GPIO输入端口的配置
+ * @brief	Get the configuration of the specified GPIO input port
  * @param[out]	gpio_in_conf
  * @see GPIOInConfTypeDef
  * @note
- * @retval	 成功返回 RET_OK
+ * @retval	 Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_GetGPIOInConf(HPS3D_HandleTypeDef *handle, GPIOInConfTypeDef *gpio_in_conf);
 
 /**
- * @brief	设置HDR模式
+ * @brief	Set HDR mode
  * @param[in]	hdr_mode
  * @see HDRModeTypeDef
  * @note
- * @retval	成功返回 RET_OK
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_SetHDRMode(HPS3D_HandleTypeDef *handle, HDRModeTypeDef hdr_mode);
 
 /**
- * @brief	设置HDR
+ * @brief	Set HDR
  * @param[in] hdr_conf
  * @see 	HDRConf
  * @note
- * @retval	成功返回 RET_OK
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_SetHDRConfig(HPS3D_HandleTypeDef *handle, HDRConf hdr_conf);
 
 /**
- * @brief	获取HDR配置
+ * @brief	Get HDR configuration
  * @param[out] hdr_conf
  * @see		HDRConf
  * @note
- * @retval	 成功返回 RET_OK
+ * @retval	 Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_GetHDRConfig(HPS3D_HandleTypeDef *handle, HDRConf *hdr_conf);
 
 /**
- * @brief	设置距离滤波器类型
+ * @brief	Set the distance filter type
  * @param[in]	distance_filter_conf
  * @see	DistanceFilterTypeDef
  * @note
- * @retval	成功返回 RET_OK
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_SetDistanceFilterType(HPS3D_HandleTypeDef *handle, DistanceFilterTypeDef distance_filter_conf);
 
 /**
- * @brief	配置距离滤波器
+ * @brief	Configurate distance filter
  * @param[in]	distance_filter_conf
  * @see DistanceFilterConfTypeDef
  * @note
- * @retval	成功返回 RET_OK
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_SetSimpleKalman(HPS3D_HandleTypeDef *handle, DistanceFilterConfTypeDef distance_filter_conf);
 
 /**
- * @brief	获取距离滤波器配置
+ * @brief	Get distance filter configuration
  * @param[out]	distance_filter_conf
  * @see		DistanceFilterConfTypeDef
  * @note
- * @retval	成功返回 RET_OK
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_GetDistanceFilterConf(HPS3D_HandleTypeDef *handle, DistanceFilterConfTypeDef *distance_filter_conf);
 
 /**
- * @brief	设置平滑滤波器
+ * @brief	Set the smooth filter
  * @param[in]	smooth_filter_conf
  * @see	SmoothFilterConfTypeDef
  * @note
- * @retval	成功返回 RET_OK
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_SetSmoothFilter(HPS3D_HandleTypeDef *handle, SmoothFilterConfTypeDef smooth_filter_conf);
 
 /**
- * @brief	获取平滑滤波器的配置
+ * @brief	Get the configuration of the smooth filter
  * @param[out]	smooth_filter_conf
  * @see	SmoothFilterConfTypeDef
  * @note
- * @retval	成功返回 RET_OK
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_GetSmoothFilterConf(HPS3D_HandleTypeDef *handle, SmoothFilterConfTypeDef *smooth_filter_conf);
 
 /**
- * @brief	设定光学参数使能
+ * @brief	Set optical parameter enable
  * @param[in]	en
- * @note	光学参数补偿是将实际光程转换为水平方向距离
- * @retval	成功返回 RET_OK
+ * @note	Optical parameter compensation is to convert the actual optical path into a horizontal distance
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_SetOpticalEnable(HPS3D_HandleTypeDef *handle, bool en);
 
 /**
- * @brief	获取光学参数
+ * @brief	Get optical parameters
  * @param[out]	optical_param_conf
  * @see	OpticalParamConfTypeDef
  * @note
- * @retval	成功返回 RET_OK
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_GetOpticalParamConf(HPS3D_HandleTypeDef *handle, OpticalParamConfTypeDef *optical_param_conf);
 
 /**
-* @brief	设置距离补偿
+* @brief	Set distance compensation
 * @note
-* @retval	成功返回 RET_OK
+* @retval	Return OK RET_OK
 */
 extern RET_StatusTypeDef HPS3D_SetDistanceOffset(HPS3D_HandleTypeDef *handle, int16_t offset);
 
 /**
-* @brief	获得距离补偿
+* @brief	Get distance compensation
 * @param[out]	offset
 * @note
-* @retval	成功返回 RET_OK
+* @retval	Return OK RET_OK
 */
 extern RET_StatusTypeDef HPS3D_GetDistanceOffset(HPS3D_HandleTypeDef *handle, int16_t *offset);
 
 /**
- * @brief	设置多机干扰检测使能
+ * @brief	Set multi-devices multual interference detection enable
  * @param[in]	en
  * @note
- * @retval	成功返回 RET_OK
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_SetInterferenceDetectEn(HPS3D_HandleTypeDef *handle, bool en);
 
 
 /**
- * @brief	设定安装角度变换使能
+ * @brief	Set the installation angle change enable
  * @param[in]	en
  * @note
- * @retval	成功返回 RET_OK
+ * @retval	Return OK RET_OK
  */
-/*extern RET_StatusTypeDef HPS3D_SetMountingAngleEnable(HPS3D_HandleTypeDef *handle, bool en);*/ /*此接口不再使用，采用以下接口替换*/
+/*extern RET_StatusTypeDef HPS3D_SetMountingAngleEnable(HPS3D_HandleTypeDef *handle, bool en);*/ /*This interface is no longer used and is replaced by the following interface*/
 
 /**
- * @brief	设定安装角度变换参数
+ * @brief	Set the installation angle transformation parameters
  * @param[in]	mounting_angle_param_conf
  * @see 		MountingAngleParamTypeDef
  * @note
- * @retval	成功返回 RET_OK
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_SetMountingAngleParamConf(HPS3D_HandleTypeDef *handle, MountingAngleParamTypeDef mounting_angle_param_conf);
 
 /**
- * @brief	获取安装角度变换参数
+ * @brief	Get the installation angle transformation parameters
  * @param[out]	mounting_angle_param_conf
  * @see 		MountingAngleParamTypeDef
  * @note
- * @retval	成功返回 RET_OK
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_GetMountingParamConf(HPS3D_HandleTypeDef *handle, MountingAngleParamTypeDef *mounting_angle_param_conf);
 
 
 
-/*************************************2.集成函数接口**********************************/
+/*************************************2.Integrated function interface**********************************/
 
 /**
- * @brief	获取目录下指定前缀文件(自动寻找设备)
- * @param[in]	dirPath 设备文件根目录
- * @param[in]   prefix  设备文件名前缀
- * @param[out]  fileName 用于保存当前当前目录下寻找到的设备
- * @note		例：n = HPS3D_GetDeviceList("/dev/","ttyACM",fileName);
- * @retval	返回获取成功的数量 0表示失败
+ * @brief	Get the specified prefix file under the directory (automatically find the device))
+ * @param[in]	dirPath Device file root directory
+ * @param[in]   prefix  Device file name prefix
+ * @param[out]  fileName To save the device found in the current current directory
+ * @note		For example：n = HPS3D_GetDeviceList("/dev/","ttyACM",fileName);
+ * @retval	Return the number of successful acquisitions 0 indicates failure
  */
 extern uint32_t HPS3D_GetDeviceList(char *dirPath,char *prefix,char fileName[DEV_NUM][DEV_NAME_SIZE]);
 
 /**
-  * @brief	设置串口属性
-  * @param[in] uartConfig
-  * @note
-  * @see UartConfTypeDef
-  * @code
-  * @retval	成功返回 RET_OK
-  */
-RET_StatusTypeDef HPS3D_SetUartConfig(UartConfTypeDef uartConfig);
-
-/**
- * @brief	设备连接
+ * @brief	Device connect
  * @param[out]	handle->ConnectStatus
  * @note
- * @retval	成功返回 RET_OK
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_Connect(HPS3D_HandleTypeDef *handle);
 
 /**
- * @brief	断开连接
+ * @brief	Disconnect
  * @param[out]	handle->ConnectStatus
  * @note
- * @retval	成功返回 RET_OK
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_DisConnect(HPS3D_HandleTypeDef *handle);
 
 
 /**
- * @brief	设备初始化
+ * @brief	Device initialization
  * @param[in]
- * @note	创建线程并得到传感器初始化参数，申请内存空间;
- * 			若使用@see HPS3D_AutoConnectAndInitConfigDevice
- * @retval	成功返回 RET_OK
+ * @note	Create a thread and get the sensor initialization parameters to apply for memory space;
+ * 			If need to use, @see HPS3D_AutoConnectAndInitConfigDevice
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_ConfigInit(HPS3D_HandleTypeDef *handle);
 
 
 /**
- * @brief	设置ROI的阈值
+   * @brief set serial port properties
+   * @param[in] uartConfig
+   * @note
+   * @see UartConfTypeDef
+   * @code
+   * @retval successfully returns RET_OK
+   */
+RET_StatusTypeDef HPS3D_SetUartConfig(UartConfTypeDef uartConfig);
+
+/**
+ * @brief	Set ROI threshold
  * @param[in]	threshold_id
  * @param[in]	roi_conf
  * @see ROIConfTypeDef
- * @retval	成功返回 RET_OK
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_SetThreshold(HPS3D_HandleTypeDef *handle, uint8_t threshold_id, ROIConfTypeDef roi_conf);
 
+
 /**
- * @brief	设置ROI参数
+ * @brief	Set ROI parameters
  * @param[in]   roi_conf
  * @see ROIConfTypeDef  GPIOOutConfTypeDef
- * @retval	成功返回 RET_OK
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_SetSingleRoi(HPS3D_HandleTypeDef *handle, ROIConfTypeDef roi_conf, GPIOOutConfTypeDef gpio_out_conf);
 
 /**
- * @brief	添加观察者(注册回调函数通知事件)
+ * @brief	Add observer(registrate callback function notification event)
  * @param[in]	Observer_t
  * @see AsyncIObserver_t
- * @note 	异步模式(连续测量模式使用此模式)
- * @retval  成功返回RET_OK
+ * @note 	Asynchronous mode (continuous measurement mode uses this mode)
+ * @retval  Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_AddObserver(void * (*fun)(HPS3D_HandleTypeDef *,AsyncIObserver_t *),HPS3D_HandleTypeDef *handle,AsyncIObserver_t *Observer_t);
 
 /**
- * @brief	 移除观察者(注销通知事件)
+ * @brief	 Remove observer (logout notification event)
  * @param[in]	Observer_t
  * @see		AsyncIObserver_t
- * @note	异步模式(连续测量模式使用此模式)
- * @retval 成功返回RET_OK
+ * @note	Asynchronous mode (continuous measurement mode uses this mode)
+ * @retval Return OK RET_OK
  */
 RET_StatusTypeDef HPS3D_RemoveObserver(AsyncIObserver_t *Observer_t);
 
 
 /**
- * @brief	设备卸载与资源回收
+ * @brief	Device uninstallation and resource recycle
  * @param[in]
  * @note
- * @retval 成功返回RET_OK
+ * @retval Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_RemoveDevice(HPS3D_HandleTypeDef *handle);
 
 /**
- * @brief		设置debug使能
+ * @brief		Set debug enable
  * @param[in]	en
  * @note
- * @retval	 成功返回 RET_OK
+ * @retval	 Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_SetDebugEnable(bool en);
 
 /**
- * @brief	获得debug使能状态
+ * @brief	Get debug enable status
  * @param
  * @note
- * @retval	返回debug使能状态值
+ * @retval	Return debug enable status value
  */
 extern bool HPS3D_GetDebugEnable(void);
 
 /**
- * @brief		接收回调函数的地址
- * @param[in]	void *Call_Back     接收回调函数地址   回调函数为void *fun(uint8_t *str, uint16_t *str_len){...}
- * @param[out]	返回给回调函数str和strlen
+ * @brief		Receive the address of the callback function
+ * @param[in]	void *Call_Back     Receive callback function address   callback function is void *fun(uint8_t *str, uint16_t *str_len){...}
+ * @param[out]	Return to callback function str和strlen
  * @note
- * @retval	 成功返回 RET_OK
+ * @retval	 Return OK RET_OK
  */
 RET_StatusTypeDef HPS3D_SetDebugFunc(void (*Call_Back)(char *str));
 
 /**
- * @brief	设置点云数据转换使能
+ * @brief	Set point cloud data conversion enable
  * @param[in]	en
  * @note
- * @retval	成功返回 RET_OK
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_SetPointCloudEn(bool en);
 
 /**
- * @brief	获取点云数据转换使能状态
+ * @brief	Get point cloud data conversion enable status
  * @param
  * @note
  * @retval	true or false
@@ -1090,41 +1088,41 @@ extern bool HPS3D_GetPointCloudEn(void);
 
 
 /**
- * @brief		单次测量
- * @param[out]	handle->RetPacketType	返回包数据类型
- * @param[out]	handle->MeasureData		测量数据
- * @note   该方式为同步测量，即调用此函数后立即得到测量返回值
+ * @brief		Single measurement
+ * @param[out]	handle->RetPacketType	Return packet type
+ * @param[out]	handle->MeasureData		Measure data
+ * @note   This method is synchronous measurement, that is, the measured return value is obtained immediately after calling this function.
  * @see
  * @code
- * @retval	 成功返回 RET_OK
+ * @retval	 Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_SingleMeasurement(HPS3D_HandleTypeDef *handle);
 
 /**
- * @brief		初始化障碍物提取参数
+ * @brief		Initialize obstacle extraction parameters
  * @param[in]
  * @note
  * @see ObstacleConfigTypedef
  * @code
  *
- * @retval	 成功返回 RET_OK
+ * @retval	 Return OK RET_OK
  */
 extern ObstacleConfigTypedef HPS3D_GetObstacleConfigInit(void);
 
 /**
- * @brief		获取障碍物提取配置参数
+ * @brief		Get obstacle extraction configuration parameters
  * @param
  * @note
  * @see ObstacleConfigTypedef
  * @code
- * @retval	成功返回RET_OK
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_ObstacleConfigInit(ObstacleConfigTypedef Conf);
 
 /**
- * @brief		设置障碍物像素点个数阈值
+ * @brief		Set the threshold number of obstacle pixels
  * @param
- * @note  通过设定此阈值可过滤细小障碍物
+ * @note  Set this threshold to filter small obstacles.
  * @see
  * @code
  * @retval none
@@ -1132,18 +1130,18 @@ extern RET_StatusTypeDef HPS3D_ObstacleConfigInit(ObstacleConfigTypedef Conf);
 extern void HPS3D_SetObstaclePixelNumberThreshold(uint32_t pixel_num_thr);
 
 /**
- * @brief		获取障碍物像素点个数阈值
+ * @brief		Get the threshold number of obstacle pixels
  * @param
  * @note
  * @see
  * @code
- * @retval  返回像素点阈值
+ * @retval  Return pixel threshold
  */
 extern uint32_t HPS3D_GetObstaclePixelNumberThreshold(void);
 
 
 /**
- * @brief	设置障碍物提取阈值偏置
+ * @brief	Set obstacle extraction threshold offset
  * @param
  * @note
  * @see
@@ -1153,114 +1151,114 @@ extern uint32_t HPS3D_GetObstaclePixelNumberThreshold(void);
 extern void HPS3D_SetThresholdOffset(int32_t thr_offset);
 
 /**
- * @brief	获取障碍物提取阈值偏置
+ * @brief	Get obstacle extraction threshold offset
  * @param
  * @note
  * @see
  * @code
- * @retval  返回当前阈值
+ * @retval  Return current threshold
  */
 extern int32_t HPS3D_GetThresholdOffset(void);
 
 
 /**
- * @brief	获取SDK版本号
+ * @brief	Get SDK version
  * @param
  * @note
  * @see
  * @code
- * @retval	 版本信息
+ * @retval	 Version information
  */
 extern Version_t HPS3D_GetSDKVersion(void);
 
 
 /**
- * @brief		将特殊测量输出值转换为指定特殊值参数配置
+ * @brief		Parameters configuration on how to convert special measured output values to specified special value
  * param[in]	enable
  * param[in]    value
  * @note
  * @see
  * @code
- * @retval	 成功返回RET_OK
+ * @retval	 Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_ConfigSpecialMeasurementValue(bool enable,uint16_t value);
 
 /**
- * @brief		设置边缘噪声滤除使能
+ * @brief		Set edge noise filter enable
  * param[in]
  * @note
  * @see
  * @code
- * @retval	成功返回RET_OK
+ * @retval	Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_SetEdgeDetectionEnable(bool en);
 
 /**
- * @brief		获取边缘噪声滤除使能
+ * @brief		Get edge noise filter enable
  * param[in]
  * @note
  * @see
  * @code
  *
- * @retval	 返回状态值
+ * @retval	 Return status value
  */
 extern bool HPS3D_GetEdgeDetectionEnable(void);
 
 /**
- * @brief		设置边缘噪声阈值
+ * @brief		Set edge noise threshold
  * param[in]
  * @note
  * @see
  * @code
  *
- * @retval	 成功返回RET_OK
+ * @retval	 Return OK RET_OK
  */
 extern RET_StatusTypeDef HPS3D_SetEdgeDetectionValue(int32_t threshold_value);
 
 /**
- * @brief	获取边缘噪声阈值
+ * @brief	Get edge noise threshold
  * param[in]
  * @note
  * @see
  * @code
  *
- * @retval	 返回当前阈值
+ * @retval	 Return current threshold value
  */
 extern int32_t HPS3D_GetEdgeDetectionValue(void);
 
 /**
-  * @brief	保存点云数据为ply格式文件
+  * @brief	save point cloud data to ply format file
   * @param[in]
   * @param[in] point_cloud_data
   * @note
   * @see PointCloudDataTypeDef
   * @code
-  * @retval 成功返回RET_OK
+  * @retval Return OK RET_OK
   */
 extern RET_StatusTypeDef HPS3D_SavePlyFile(char *filename,PointCloudDataTypeDef point_cloud_data);
 
 /**
-  * @brief	提取障碍物避障方案(3IO版本通过IO输出报警值)
+  * @brief	Extract obstacle avoidance scheme (3IO version output alarm value by IO)
   * @param[in] MeasureData
   * @param[in] AvoidConf
   * @note
   * @see AvoidanceTypeDef
   * @code
-  * @retval	成功返回RET_OK
+  * @retval	Return OK RET_OK
   */
 extern RET_StatusTypeDef HPS3D_ObstacleAvoidance(HPS3D_HandleTypeDef *handle,MeasureDataTypeDef *MeasureData,AvoidanceTypeDef *AvoidConf);
 
 /**
-  * @brief	设置点云数据镜像
-  * @param[in] type 镜像方向(水平或垂直)
+  * @brief	Set point cloud mirror
+  * @param[in] type Mirror direction (horizontal or vertical)
   * @note
   * @see PointCloudImageMirrorTypeDef
   * @code
-  * @retval	成功返回RET_OK
+  * @retval	Return OK RET_OK
   */
 extern RET_StatusTypeDef HPS3D_SetPointCloudMirrorType(PointCloudImageMirrorTypeDef type);
 /**
-  * @brief	获取点云数据镜像
+  * @brief	Get point cloud mirror
   * @param[in]
   * @note
   * @see PointCloudImageMirrorTypeDef
@@ -1270,18 +1268,18 @@ extern RET_StatusTypeDef HPS3D_SetPointCloudMirrorType(PointCloudImageMirrorType
 extern PointCloudImageMirrorTypeDef HPS3D_GetPointCloudMirrorType(void);
 
 /**
-  * @brief	设置服务器信息
+  * @brief	Set server information
   * @param[in]
   * @note eg: char *serverIP = "192.168.0.10";
-  *         serverPort = 12345;  此函数需在connect之前调用
+  *         serverPort = 12345;  This function needs to be called before connect
   * @see
   * @code
-  * @retval	成功返回RET_OK
+  * @retval	Return OK RET_OK
   */
 extern RET_StatusTypeDef HPS3D_SetEthernetServerInfo(HPS3D_HandleTypeDef *handle,char *serverIP,uint16_t serverPort);
 
 /**
-  * @brief	重置服务器IP（修改设备默认IP,不建议在此修改）
+  * @brief	Reset server IP（To edit device default IP. Edit here is not recommended
   * @param[in]  serverIP
   * @param[in]  serverPort
   * @param[in]  netmask
@@ -1292,40 +1290,40 @@ extern RET_StatusTypeDef HPS3D_SetEthernetServerInfo(HPS3D_HandleTypeDef *handle
   *         serverPort = 12345;
   * @see
   * @code
-  * @retval	成功返回RET_OK
+  * @retval	Return OK RET_OK
   */
 RET_StatusTypeDef HPS3D_ConfigEthernet(HPS3D_HandleTypeDef *handle,uint8_t *serverIP,uint16_t serverPort,uint8_t *netMask,uint8_t *geteway);
 
 /**
-  * @brief	多设备自动连接并初始化(连接数量受DEV_NUM限制,可修改)
+  * @brief	Multiple devices automatically connect and initialize (the number of connections is limited by DEV_NUM and can be modified)
   * @param[in]
   * @note
   * @see
   * @code
-  * @retval	返回连接成功的数量
+  * @retval	Return the number of successful connections
   */
 extern uint8_t HPS3D_AutoConnectAndInitConfigDevice(HPS3D_HandleTypeDef *handle);
 
 /**
- * @brief	设置多机编码
- * @param[in]	CameraCode	 多机编码
- * @note 多机编码仅支持固件版本为1.7.62及以上版本，且编码序号为0-15
- * @see
- * @code
- *
- * @retval	成功返回 RET_OK
- */
+  * @brief set multi-machine encoding
+  * @param[in] CameraCode Multi-machine code
+  * @note Multi-machine encoding only supports firmware version 1.7.62 and above, and the code serial number is 0-15.
+  * @see
+  * @code
+  *
+  * @retval Return OK RET_OK
+  */
 extern RET_StatusTypeDef HPS3D_SetMultiCameraCode(HPS3D_HandleTypeDef *handle, uint8_t CameraCode);
 
 /**
- * @brief	获取多机编码
- * @param[in]	handle
- * @note
- * @see
- * @code
- *
- * @retval	返回当前多机编码值
- */
+  * @brief Get multi-machine code
+  * @param[in] handle
+  * @note
+  * @see
+  * @code
+  *
+  * @retval returns the current multi-machine code value
+  */
 extern uint8_t HPS3D_GetMultiCameraCode(HPS3D_HandleTypeDef *handle);
 
 #ifdef __cplusplus

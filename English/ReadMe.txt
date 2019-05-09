@@ -66,3 +66,10 @@ HPS3D_SetMultiCameraCode(); Note: The bending of the point cloud conversion is s
 
 V1.7.13
 1, repair FULL_ROI_DATA packet exception phenomenon
+
+V1.7.14
+1. For better cross-platform use, modify the api.h file, where
+FullRoiDataTypeDef:   Distance[MAX_PIXEL_NUM]===> *distance;
+DepthDataTypeDef:     Distance[MAX_PIXEL_NUM] ===> *distance;
+ObstacleDataTypedef:  PixelBuffer[MAX_PIXEL_NUM]===> *PixelBuffer
+PointCloudDataTypeDef:Point_data[MAX_PIXEL_NUM]===> *point_data;

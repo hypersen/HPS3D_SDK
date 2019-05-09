@@ -67,5 +67,9 @@ V1.7.12
 V1.7.13
 1、修复FULL_ROI_DATA数据包异常现象
 
-
-
+V1.7.14
+1、为更好的跨平台使用，修改了api.h文件，其中
+	FullRoiDataTypeDef中的distance[MAX_PIXEL_NUM]===> *distance;
+	DepthDataTypeDef中的distance[MAX_PIXEL_NUM]===> *distance;
+	ObstacleDataTypedef中的PixelBuffer[MAX_PIXEL_NUM]===> *PixelBuffer;
+	PointCloudDataTypeDef中的point_data[MAX_PIXEL_NUM]===> *point_data;
