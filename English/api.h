@@ -74,7 +74,7 @@ typedef double 			float64_t;
 /*	Camera resolution */
 #define		RES_WIDTH			 (160)
 #define		RES_HEIGHT			 (60)
-#define		MAX_PIX_NUM 		 (RES_WIDTH * RES_HEIGHT)
+#define		MAX_PIX_NUM 		 (9600)    /*RES_WIDTH * RES_HEIGHT*/
 
 /*Indicates the invalid data and meaning of current measuring pixel*/
 #define	 	LOW_AMPLITUDE   	(65300) 						/*Low amplitude*/
@@ -417,7 +417,7 @@ typedef struct
 /*Ordered point cloud data*/
 typedef struct
 {
-	PerPointCloudDataTypeDef point_data[MAX_PIX_NUM];
+	PerPointCloudDataTypeDef *point_data;
 	uint16_t width;
 	uint16_t height;
 	uint32_t points;

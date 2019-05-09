@@ -74,7 +74,7 @@ typedef double 			float64_t;
 /*	相机分辨率 */
 #define		RES_WIDTH			 (160)
 #define		RES_HEIGHT			 (60)
-#define		MAX_PIX_NUM 		 (RES_WIDTH * RES_HEIGHT)
+#define		MAX_PIX_NUM 		 (9600) 						 /*RES_WIDTH * RES_HEIGHT*/
 
 /*指示当前像素点测量无效值及含义*/
 #define	 	LOW_AMPLITUDE   	(65300) 						/*信号幅值低*/

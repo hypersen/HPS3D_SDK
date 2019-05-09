@@ -17,6 +17,9 @@ uint16_t FrameCount = 0;
 uint16_t cnt = 0;
 QImage dist_img;
 bool showImagFlag = false;
+byte upStatus = 0;
+QDateTime  last_time = QDateTime::currentDateTime();
+float fps = 0;
 
 /*Define function Pointers to call dynamic link libraries*/
 RET_StatusTypeDef(*SetDebugEnable)(bool en) = NULL;
@@ -33,6 +36,8 @@ RET_StatusTypeDef (*SetPointCloudEn)(bool en) = NULL;
 bool (*GetPointCloudEn)(void) = NULL;
 RET_StatusTypeDef (*SetEthernetServerInfo)(HPS3D_HandleTypeDef *handle,uint8_t *serverIP,uint16_t serverPort) = NULL;
 RET_StatusTypeDef (*SavePlyFile)(uint8_t *filename,PointCloudDataTypeDef point_cloud_data) = NULL;
+RET_StatusTypeDef (*SetMeasurePacketType)(MeasurePacketTypeDef type) = NULL;
+RET_StatusTypeDef (*SelectROIGroup)(HPS3D_HandleTypeDef *handle, uint8_t group_id) = NULL;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -70,10 +75,12 @@ MainWindow::MainWindow(QWidget *parent) :
     GetDeviceList = (uint32_t(*)(uint8_t * , uint8_t *, uint8_t fileName[DEV_NUM][DEV_NAME_SIZE]))GetProcAddress(module, "HPS3D_GetDeviceList");
     /*Set/get point cloud enable conversion*/
     SetPointCloudEn = (RET_StatusTypeDef(*)(bool en))GetProcAddress(module, "HPS3D_SetPointCloudEn");
-    GetPointCloudEn = (bool (*)(void))GetProcAddress(module, "HPS3D_GetPointCloudEn");
     SavePlyFile = (RET_StatusTypeDef (*)(uint8_t *filename,PointCloudDataTypeDef point_cloud_data))GetProcAddress(module, "HPS3D_SavePlyFile");;
     SetEthernetServerInfo = (RET_StatusTypeDef (*)(HPS3D_HandleTypeDef *,uint8_t *,uint16_t))GetProcAddress(module, "HPS3D_SetEthernetServerInfo");
-
+    /*Set MeasureData Type*/
+    SetMeasurePacketType = (RET_StatusTypeDef (*)(MeasurePacketTypeDef type))GetProcAddress(module, "HPS3D_SetMeasurePacketType");
+    /*Select Group ROI id*/
+    SelectROIGroup = (RET_StatusTypeDef (*)(HPS3D_HandleTypeDef *handle, uint8_t group_id))GetProcAddress(module, "HPS3D_SelectROIGroup");
     uint8_t fileName[10][20];
     ui->DeviceName->clear();
 #if false
@@ -91,6 +98,22 @@ MainWindow::MainWindow(QWidget *parent) :
 void my_printf(uint8_t *str)
 {
     printf("%s\n", str);
+}
+
+/// <summary>
+/// Cal Fps
+/// </summary>
+void fps_cal()
+{
+   QDateTime  curTime = QDateTime::currentDateTime();
+   int time = last_time.msecsTo(curTime);
+   if ( time > 1000.0) // 取固定时间间隔为1秒
+   {
+       fps = FrameCount / (time / 1000.0);
+       FrameCount = 0;
+       last_time = curTime;
+   }
+
 }
 
 
@@ -123,24 +146,53 @@ void * UserGetDataFromSensor(HPS3D_HandleTypeDef *handle,AsyncIObserver_t *event
     {
         if(event->AsyncEvent == ISubject_Event_DataRecvd)
         {
+            FrameCount++;
             switch(event->RetPacketType)/*Returns the packet data type*/
             {
                 case SIMPLE_ROI_PACKET:
                     dist_average = event->MeasureData.simple_roi_data[0].distance_average;
                     break;
                 case FULL_ROI_PACKET:
-                    dist_average = event->MeasureData.full_roi_data[0].distance_average;
-                    dist_img = CharToImage(FullRoiDistance,dist_average,160,60);
+                    showImagFlag = true;
+                    if(event->MeasureData.full_roi_data[0].threshold_state !=0 && event->MeasureData.full_roi_data[0].threshold_state != upStatus)
+                    {
+                        RET_StatusTypeDef ret = RET_OK;
+                        HPS_handle.RunMode = RUN_IDLE;
+                        SetRunMode(&HPS_handle);
+                        ret = SelectROIGroup(&HPS_handle,1);
+                        if(RET_OK != ret)
+                        {
+                            printf("HPS3D_SelectROIGroup failed\n");
+                        }
+                        else
+                        {
+                            ret = SingleMeasurement(&HPS_handle);
+                            if(RET_OK != ret)
+                            {
+                                printf("HPS3D_SingleMeasurement failed\n");
+                            }
+                            /*显示当前状态*/
+
+                            dist_average = HPS_handle.MeasureData.full_roi_data->distance_average;
+                            dist_img = CharToImage((uint16_t *)HPS_handle.MeasureData.full_roi_data->distance,dist_average,160,60);
+
+                            /*切换ROI分组*/
+                            ret = SelectROIGroup(&HPS_handle,0);
+                            if(RET_OK != ret)
+                            {
+                                printf("HPS3D_SelectROIGroup failed\n");
+                            }
+                            HPS_handle.RunMode = RUN_CONTINUOUS;
+                            SetRunMode(&HPS_handle);
+                        }
+                    }
+                    upStatus = event->MeasureData.full_roi_data[0].threshold_state;
+                   // dist_average = event->MeasureData.full_roi_data[0].distance_average;
+                   // dist_img = CharToImage(FullRoiDistance,dist_average,160,60);
                     break;
                 case FULL_DEPTH_PACKET:
                      dist_average = event->MeasureData.full_depth_data->distance_average;
                      dist_img = CharToImage((uint16_t *)event->MeasureData.full_depth_data->distance,dist_average,160,60);
-                     if(event->MeasureData.full_depth_data->frame_cnt - FrameCount != 1)
-                     {
-                         cnt++;
-                     }
-                     FrameCount = event->MeasureData.full_depth_data->frame_cnt;
-
                      showImagFlag = true;
 
                     char acTmpBuf[128] = { 0 };
@@ -169,8 +221,9 @@ void MainWindow::timerUpDate()
     {
         ui->label_pic->setPixmap(QPixmap::fromImage(dist_img));
         ui->dist_Labe->setText(QString::number(dist_average));
-        ui->FrameCount->setText(QString::number(cnt-1));
         showImagFlag = false;
+        fps_cal();
+        ui->FrameCount->setText(QString::number(fps));
     }
 }
 
@@ -185,10 +238,15 @@ void MainWindow::on_Connect_clicked()
 {
 #if false
     QByteArray fileName = ui->DeviceName->currentText().toLatin1();
-    HPS_handle.DeviceName = (uint8_t *)fileName.data();
+    HPS_handle.DeviceName = (char *)fileName.data();
 #else
     SetEthernetServerInfo(&HPS_handle,(uint8_t *)"192.168.0.10",12345);
 #endif
+    if(RET_OK !=SetMeasurePacketType(ROI_DATA_PACKET))
+    {
+        QMessageBox::information(this, "SetMeasurePacketType", "SetMeasurePacketType Falied", "OK");
+        return;
+    }
     /*Device connect*/
     if(RET_OK != Connect(&HPS_handle))
     {
@@ -220,6 +278,7 @@ void MainWindow::on_Connect_clicked()
         UpdateTimer->start(1);
         QMessageBox::information(this, "ConnectStatus", "Connect Succeed", "OK");
     }
+    last_time = QDateTime::currentDateTime();
 }
 
 void MainWindow::on_DisConnect_clicked()

@@ -129,7 +129,7 @@ int main(int argc, char **argv)
 	//set debug enable and install printf log callback function
 	HPS3D_SetDebugEnable(false);
 	HPS3D_SetDebugFunc(&my_printf);
-	HPS3D_SetMeasurePacketType(ROI_DATA_PACKET);
+	//HPS3D_SetMeasurePacketType(ROI_DATA_PACKET);
 	int b = 0;
 	printf("select Transport type: 0:USB 1:Ethernet\n");
 	scanf("%d",&b);
@@ -148,7 +148,7 @@ int main(int argc, char **argv)
 		ret = HPS3D_Connect(&handle);
 		if(ret != RET_OK)
 		{
-			printf("Device open failed！ret = %d\n",ret);
+			printf("Device open failed,ret = %d\n",ret);
 			break;
 		}
 		
