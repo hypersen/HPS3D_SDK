@@ -26,7 +26,7 @@ import libhps3d32.Libhps3d32Library.RET_StatusTypeDef;
 public class HPS3D_SDK_Demo {
 	
 	//Libhps3d32Library.HPS3D_AddObserver_fun_callback fun;
-	static int upStatus = 0;
+	static int upFrameCnt = 0;
 	static byte firstFlag = 1;
 	static int frameCnt = 0;
 	static libhps3d32.AsyncIObserver_t MyObserver = new AsyncIObserver_t();  
@@ -71,45 +71,51 @@ public class HPS3D_SDK_Demo {
 		public Pointer apply(HPS3D_HandleTypeDef HPS3D_HandleTypeDefPtr1, AsyncIObserver_t AsyncIObserver_tPtr1) {
 			// TODO Auto-generated method stub
 			frameCnt++;
+			
 			// TODO Auto-generated method stub				
 			switch(AsyncIObserver_tPtr1.RetPacketType)
 			{
 				case Libhps3d32Library.RetPacketTypedef.SIMPLE_ROI_PACKET: 
 					break;
 				case Libhps3d32Library.RetPacketTypedef.FULL_ROI_PACKET:
-					//System.out.println(AsyncIObserver_tPtr1.MeasureData.full_roi_data.frame_cnt);
-					
-					if(AsyncIObserver_tPtr1.MeasureData.full_roi_data.threshold_state!=0)
-					{
-						System.out.println("threshold_state = 1\n");
-					}
-					
+					//System.out.println(AsyncIObserver_tPtr1.MeasureData.full_roi_data.frame_cnt);					
 					full_roi_buf = (libhps3d32.FullRoiDataTypeDef [])AsyncIObserver_tPtr1.MeasureData.full_roi_data.toArray(handle.RoiNumber);
-					if(AsyncIObserver_tPtr1.MeasureData.full_roi_data.threshold_state!=0 && AsyncIObserver_tPtr1.MeasureData.full_roi_data.threshold_state != upStatus)
+					if(AsyncIObserver_tPtr1.MeasureData.full_roi_data.threshold_state!=0 && AsyncIObserver_tPtr1.MeasureData.full_roi_data.frame_cnt- upFrameCnt!=1)
 					{
+						upFrameCnt = AsyncIObserver_tPtr1.MeasureData.full_roi_data.frame_cnt;
 						handle.RunMode = Libhps3d32Library.RunModeTypeDef.RUN_IDLE;
 						Libhps3d32Library.HPS3D_SetRunMode(handle);
 						Libhps3d32Library.HPS3D_SelectROIGroup(handle, (byte)1); /*切换ROI分组*/
 						Libhps3d32Library.HPS3D_SingleMeasurement(handle);/*单次测量保存图片*/
-						
+						short[] distance = (short [])handle.MeasureData.full_roi_data.distance.getPointer().getShortArray(0, Libhps3d32Library.MAX_PIX_NUM);
 						int pos = 0;
 						int dist_avg = handle.MeasureData.full_roi_data.distance_average;
 						for (int y = handle.MeasureData.full_roi_data.left_top_y; y <= handle.MeasureData.full_roi_data.right_bottom_y; y++)
 		                {
 		                    for (int x = handle.MeasureData.full_roi_data.left_top_x; x <= handle.MeasureData.full_roi_data.right_bottom_x; x++)
-		                    {		                    	
-		                    	distance_8bite[y * Libhps3d32Library.RES_WIDTH + x] = ((float)handle.MeasureData.full_roi_data.distance[pos] / (1.5*dist_avg) * 255.0) > 255 ? (byte)255: (byte)((float)handle.MeasureData.full_roi_data.distance[pos] / (1.5*dist_avg) *255.0) ;		                        
+		                    {		     
+		                    	if(distance[pos]>0)
+		                    	{
+		                    		distance_8bite[y * Libhps3d32Library.RES_WIDTH + x] = ((float)distance[pos] / (1.5*dist_avg) * 255.0) > 255 ? (byte)255: (byte)((float)distance[pos] / (1.5*dist_avg) *255.0) ;		              
+		                    	}
+		                    	else
+		                    	{
+		                    		distance_8bite[y * Libhps3d32Library.RES_WIDTH + x] = 0;
+		                    	}
+		                    	          
 		                        pos++;
 		                    }
 		                }
 						SimpleDateFormat df = new SimpleDateFormat("yyMMddHHmmss");//设置日期格式
 						String filename = "./" + df.format(new Date())+".jpg";
-						byte2image(distance_8bite,filename);						
-						Libhps3d32Library.HPS3D_SelectROIGroup(handle, (byte)0); /*切换ROI分组*/
+						byte2image(distance_8bite,filename);		
+						int ret = 0;
+						ret = Libhps3d32Library.HPS3D_SelectROIGroup(handle, (byte)0); /*切换ROI分组*/
 						handle.RunMode = Libhps3d32Library.RunModeTypeDef.RUN_CONTINUOUS;
-						Libhps3d32Library.HPS3D_SetRunMode(handle);							
+						Libhps3d32Library.HPS3D_SetRunMode(handle);		
+					
 					}
-					upStatus = AsyncIObserver_tPtr1.MeasureData.full_roi_data.threshold_state;
+					
 					break;
 				case Libhps3d32Library.RetPacketTypedef.SIMPLE_DEPTH_PACKET:
 					break;
