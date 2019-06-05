@@ -343,6 +343,7 @@ typedef enum
 	FULL_ROI_PACKET,				/*完整ROI数据包（含深度图数据）@see FullRoiDataTypeDef*/
 	FULL_DEPTH_PACKET,				/*完整深度数据包（含深度图数据）@see DepthDataTypeDef*/
 	SIMPLE_DEPTH_PACKET,			/*简单深度数据包（不含深度图数据）@see DepthDataTypeDef*/
+	KEEP_ALIVE_PACKET,				/*心跳返回包*/
 	OBSTACLE_PACKET,				/*障碍物数据包  @see ObstacleDataTypedef*/
     SYSTEM_ERROR					/*系统错误*/
 }RetPacketTypedef;
@@ -543,9 +544,9 @@ typedef struct
 /*观察者订阅事件*/
 typedef enum
 {
-	ISubject_Event_DataRecvd = 0x01,	/*数据接收事件*/
-	ISubject_Event_DevConnect = 0x02,	/*连接事件*/
-	ISubject_Event_DevDisconnect = 0x03 /*断开连接事件*/
+	ISubject_Event_DataRecvd = 1<<0,	/*数据接收事件*/
+	ISubject_Event_DevConnect = 1<<1,	/*连接事件*/
+	ISubject_Event_DevDisconnect = 1<<2 /*断开连接事件*/
 }AsyncISubjectEvent;
 
 /*观察者订阅事件结构体参数*/
@@ -1327,6 +1328,29 @@ extern RET_StatusTypeDef HPS3D_SetMultiCameraCode(HPS3D_HandleTypeDef *handle, u
  * @retval	返回当前多机编码值
  */
 extern uint8_t HPS3D_GetMultiCameraCode(HPS3D_HandleTypeDef *handle);
+
+/**
+  * @brief 设置心跳检测
+  * @param[in] handle
+  * @param[in] enable 心跳检测使能
+  * @param[in] time_ms 心跳检测时间ms
+  * @note 调用此接口后，在HPS3D_SetRunMode前需先发送一次心跳包HPS3D_SendKeepAlive
+  * @see
+  * @code
+  * @retval	成功返回RET_OK
+  */
+extern RET_StatusTypeDef HPS3D_SetKeepAliveConfig(HPS3D_HandleTypeDef *handle, bool enable, uint32_t time_ms);
+
+/**
+  * @brief 发送保活指令
+  * @param[in] handle
+  * @note  此接口需要在设定心跳检测时间内定时发送，发送此命令后只需检测在设定时间内是否有心跳返回包即可
+  * @see RetPacketTypedef 中的KEEP_ALIVE_PACKET
+  * @code
+  * @retval	成功返回RET_OK
+  */
+extern RET_StatusTypeDef HPS3D_SendKeepAlive(HPS3D_HandleTypeDef *handle);
+
 
 #ifdef __cplusplus
 }

@@ -540,9 +540,9 @@ typedef struct
 /*Observer subscription event*/
 typedef enum
 {
-	ISubject_Event_DataRecvd = 0x01,	/*Data receive event*/
-	ISubject_Event_DevConnect = 0x02,	/*Connect even*/
-	ISubject_Event_DevDisconnect = 0x03 /*Disconnect event*/
+	ISubject_Event_DataRecvd = 1<<0,	/*Data receive event*/
+	ISubject_Event_DevConnect = 1<<1,	/*Connect even*/
+	ISubject_Event_DevDisconnect = 1<<2 /*Disconnect event*/
 }AsyncISubjectEvent;
 
 /*Observer subscription event structure parameters*/
@@ -1325,6 +1325,29 @@ extern RET_StatusTypeDef HPS3D_SetMultiCameraCode(HPS3D_HandleTypeDef *handle, u
   * @retval returns the current multi-machine code value
   */
 extern uint8_t HPS3D_GetMultiCameraCode(HPS3D_HandleTypeDef *handle);
+
+
+/**
+  * @brief set heartbeat detection
+  * @param[in] handle
+  * @param[in] enable Heartbeat Detection Enable
+  * @param[in] time_ms heartbeat detection time ms
+  * @note After calling this interface, send a heartbeat packet HPS3D_SendKeepAlive before HPS3D_SetRunMode
+  * @see
+  * @code
+  * @retval	Return OK RET_OK
+  */
+extern RET_StatusTypeDef HPS3D_SetKeepAliveConfig(HPS3D_HandleTypeDef *handle, bool enable, uint32_t time_ms);
+
+/**
+  * @brief sends a keep-alive command
+  * @param[in] handle
+  * @note This interface needs to be sent periodically within the set heartbeat detection time. After sending this command, it is only necessary to detect whether there is a heartbeat return packet within the set time.
+  * KEEP_ALIVE_PACKET in @see RetPacketTypedef
+  * @code
+  * @retval	Return OK RET_OK
+  */
+extern RET_StatusTypeDef HPS3D_SendKeepAlive(HPS3D_HandleTypeDef *handle);
 
 #ifdef __cplusplus
 }

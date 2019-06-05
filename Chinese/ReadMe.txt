@@ -73,3 +73,8 @@ V1.7.14
 	DepthDataTypeDef中的distance[MAX_PIXEL_NUM]===> *distance;
 	ObstacleDataTypedef中的PixelBuffer[MAX_PIXEL_NUM]===> *PixelBuffer;
 	PointCloudDataTypeDef中的point_data[MAX_PIXEL_NUM]===> *point_data;
+	
+V1.7.15
+1、加入心跳检测机制，判断通信是否异常断开连接
+HPS3D_SetKeepAliveConfig(...) :设置心跳检测时间，在设定完成后必须定时发送心跳包给传感器，否则设备在超时后将自动停止工作；调用此接口配置完成后，需在连续测量前发送一次心跳包给传感器使用以下接口
+HPS3D_SendKeepAlive(...) :设置保活，需在设定检测时间内发送保活指令，确保传感器持续工作；发送此命令后回调函数中会产生相应的返回包KEEP_ALIVE_PACKET，可通过计算两次返回包的时间差来检测心跳是否存在
