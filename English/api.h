@@ -66,6 +66,7 @@ typedef double 			float64_t;
 /*User can modify the parameter,odify parameter values will affect the occupation of the SDK memory. Refer to SDK manual(HPS3D_RM002) for detail instructions. 4 Support mult-devices connection  */
 #define 	DEV_NUM 			 (10)							/*Device number supported*/
 #define     DEV_NAME_SIZE		 (20)							/*Device name size*/
+#define 	ROI_GROUP_NUMBER     (16)							/*Number of ROI group*/
 #define 	ROI_NUM 			 (8)							/*Number of ROI*/
 #define 	OBSTACLE_NUM 		 (20)							/*Number of obstacles supported*/
 #define 	OBSERVER_NUM  		 (10)							/*Number of observers*/
@@ -340,6 +341,7 @@ typedef enum
 	FULL_ROI_PACKET,				/*Full ROI packet(includes depth data)@see FullRoiDataTypeDef*/
 	FULL_DEPTH_PACKET,				/*Full depth data packet(includes depth data)@see DepthDataTypeDef*/
 	SIMPLE_DEPTH_PACKET,			/*Simple depth data packet(depth data not included)@see DepthDataTypeDef*/
+	KEEP_ALIVE_PACKET,				/*KEEP Alive*/
 	OBSTACLE_PACKET,				/*Obstacle data packet @see ObstacleDataTypedef*/
     SYSTEM_ERROR					/*System error*/
 }RetPacketTypedef;
@@ -1348,6 +1350,78 @@ extern RET_StatusTypeDef HPS3D_SetKeepAliveConfig(HPS3D_HandleTypeDef *handle, b
   * @retval	Return OK RET_OK
   */
 extern RET_StatusTypeDef HPS3D_SendKeepAlive(HPS3D_HandleTypeDef *handle);
+
+/**
+  * @brief sets the number of splicing devices
+  * @param[in] number of stitches
+  * @note This interface is only used when multiple devices are spliced. For details, please contact the relevant technical staff.
+  * @see
+  * @code
+  * @retval returns RET_OK successfully
+  */
+extern RET_StatusTypeDef HPS3D_SpliceSetDeviceNumber(uint8_t number);
+
+/**
+  * @brief Get the number of current splicing devices
+  * @param[in]
+  * @note This interface is only used when multiple devices are spliced. For details, please contact the relevant technical staff.
+  * @see
+  * @code
+  * @retval number of stitches
+  */
+extern uint8_t HPS3D_SpliceGetDeviceNumber(void);
+
+/**
+  * @brief Loads the current device installation angle and other parameters (used for multiple devices in a unified coordinate system)
+  * @param[in]
+  * @note This interface is only used when multiple devices are spliced. For details, please contact the relevant technical staff.
+  * @see
+  * @code
+  * @retval returns RET_OK successfully
+  */
+extern RET_StatusTypeDef HPS3D_SpliceLoadRotateConfig(const char* fileName);
+
+/**
+  * @brief Load parameters such as splicing device sensitive area
+  * @param[in]
+  * @note This interface is only used when multiple devices are spliced. For details, please contact the relevant technical staff.
+  * @see
+  * @code
+  * @retval returns RET_OK successfully
+  */
+extern RET_StatusTypeDef HPS3D_SpliceLoadROIConfig(const char* fileName);
+
+/**
+  * @brief Point cloud data and sensitive area data processing functions when multiple devices are spliced
+  * @param[in] SplicePointCloudBuffer: Complete point cloud data after unifying the device coordinate system
+  * @param[in] point_cloud_data: point cloud data buffer
+  * @param[in] FullRoiData: used to save the ROI information under the current group
+  * @note This interface is only used when splicing multiple devices. For details, please contact the relevant technical personnel. This interface must judge the return value.
+  * @see
+  * @code
+  * @retval returns RET_OK successfully
+  */
+extern RET_StatusTypeDef HPS3D_SpliceProcessFunc(PerPointCloudDataTypeDef *SplicePointCloudBuffer, uint8_t id, PerPointCloudDataTypeDef point_cloud_data[MAX_PIX_NUM], FullRoiDataTypeDef FullRoiData[ROI_NUM]);
+
+/**
+ * @brief sets the number of splicing devices
+ * @param[in] group ID
+ * @note Please refer to ROI_GROUP_NUMBER for the range of ID values.
+ * @see ROI_GROUP_NUMBER
+ * @code
+ * @retval returns none
+ */
+extern RET_StatusTypeDef HPS3D_SpliceSetCurrentGroupID(uint8_t groupID);
+
+/**
+ * @brief Get the current number of splicing devices
+ * @param
+ * @note
+ * @see
+ * @code
+ * @retval returns none
+ */
+extern RET_StatusTypeDef HPS3D_SpliceSetCurrentGroupID(uint8_t groupID);
 
 #ifdef __cplusplus
 }

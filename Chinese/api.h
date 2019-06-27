@@ -26,7 +26,7 @@
 *---------------------------------------------------------------------
 * <Version>		| <Description>
 *---------------------------------------------------------------------
-* V1.0.0		| TODO
+* V1.7.16		| TODO
 *---------------------------------------------------------------------
 
 **********************************************************************/
@@ -66,6 +66,7 @@ typedef double 			float64_t;
 /*用户可修改，参数直接影响到SDK内存占用，详细配置参考SDK手册(HPS3D_RM002) 四、多设备支持  */
 #define 	DEV_NUM 			 (10)							/*支持的设备数量*/
 #define     DEV_NAME_SIZE		 (20)							/*设备名长度*/
+#define 	ROI_GROUP_NUMBER     (16)							/*ROI分组数量*/
 #define 	ROI_NUM 			 (8)							/*ROI的数量*/
 #define 	OBSTACLE_NUM 		 (20)							/*支持障碍物数量*/
 #define 	OBSERVER_NUM  		 (10)							/*观察者数量*/
@@ -986,6 +987,14 @@ RET_StatusTypeDef HPS3D_SetUartConfig(UartConfTypeDef uartConfig);
 extern RET_StatusTypeDef HPS3D_Connect(HPS3D_HandleTypeDef *handle);
 
 /**
+ * @brief	设备断开后重连
+ * @param[out]	handle->ConnectStatus
+ * @note
+ * @retval	成功返回 RET_OK
+ */
+extern RET_StatusTypeDef HPS3D_Reconnection(HPS3D_HandleTypeDef *handle);
+
+/**
  * @brief	断开连接
  * @param[out]	handle->ConnectStatus
  * @note
@@ -1334,7 +1343,7 @@ extern uint8_t HPS3D_GetMultiCameraCode(HPS3D_HandleTypeDef *handle);
   * @param[in] handle
   * @param[in] enable 心跳检测使能
   * @param[in] time_ms 心跳检测时间ms
-  * @note 调用此接口后，在HPS3D_SetRunMode前需先发送一次心跳包HPS3D_SendKeepAlive
+  * @note
   * @see
   * @code
   * @retval	成功返回RET_OK
@@ -1351,6 +1360,77 @@ extern RET_StatusTypeDef HPS3D_SetKeepAliveConfig(HPS3D_HandleTypeDef *handle, b
   */
 extern RET_StatusTypeDef HPS3D_SendKeepAlive(HPS3D_HandleTypeDef *handle);
 
+/**
+  * @brief 设置拼接设备的数量
+  * @param[in] 拼接数量
+  * @note  此接口仅用于多台设备拼接时使用,具体用法请联系相关技术人员
+  * @see 
+  * @code
+  * @retval	成功返回RET_OK
+  */
+extern RET_StatusTypeDef HPS3D_SpliceSetDeviceNumber(uint8_t number);
+
+/**
+  * @brief 获取当前拼接设备的数量
+  * @param[in] 
+  * @note  此接口仅用于多台设备拼接时使用,具体用法请联系相关技术人员
+  * @see 
+  * @code
+  * @retval	拼接数量
+  */
+extern uint8_t HPS3D_SpliceGetDeviceNumber(void);
+
+/**
+  * @brief 加载当前设备安装角度等参数(用于多台设备统一坐标系使用)
+  * @param[in] 
+  * @note  此接口仅用于多台设备拼接时使用,具体用法请联系相关技术人员
+  * @see 
+  * @code
+  * @retval	成功返回RET_OK
+  */
+extern RET_StatusTypeDef HPS3D_SpliceLoadRotateConfig(const char* fileName);
+
+/**
+  * @brief 加载拼接设备敏感区域等参数
+  * @param[in] 
+  * @note  此接口仅用于多台设备拼接时使用,具体用法请联系相关技术人员
+  * @see 
+  * @code
+  * @retval	成功返回RET_OK
+  */
+extern RET_StatusTypeDef HPS3D_SpliceLoadROIConfig(const char* fileName);
+
+/**
+  * @brief 多台设备拼接时点云数据及敏感区域数据处理函数
+  * @param[in] SplicePointCloudBuffer：统一拼接设备坐标系后的完整点云数据
+  * @param[in] point_cloud_data：点云数据buffer
+  * @param[in] FullRoiData: 用于保存当前分组下的ROI信息
+  * @note  此接口仅用于多台设备拼接时使用,具体用法请联系相关技术人员，此接口必须判断返回值
+  * @see 
+  * @code
+  * @retval	成功返回RET_OK
+  */
+extern RET_StatusTypeDef HPS3D_SpliceProcessFunc(PerPointCloudDataTypeDef *SplicePointCloudBuffer,uint8_t id,PerPointCloudDataTypeDef point_cloud_data[MAX_PIX_NUM],FullRoiDataTypeDef FullRoiData[ROI_NUM]);
+
+/**
+ * @brief	设置拼接设备数量
+ * @param[in] 组ID 
+ * @note 该ID值范围请参考ROI_GROUP_NUMBER
+ * @see ROI_GROUP_NUMBER
+ * @code
+ * @retval	返回无
+ */
+extern RET_StatusTypeDef HPS3D_SpliceSetCurrentGroupID(uint8_t groupID);
+
+/**
+ * @brief	获取当前拼接设备数量
+ * @param
+ * @note
+ * @see
+ * @code
+ * @retval	返回无
+ */
+extern RET_StatusTypeDef HPS3D_SpliceSetCurrentGroupID(uint8_t groupID);
 
 #ifdef __cplusplus
 }

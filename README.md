@@ -1,6 +1,10 @@
 # HPS3D_SDK
 The current project includes Demo programs under Linux, ros, windows and other platforms. For details, please refer to HPS-3D160 Solid-state Depth camera SDK manual.
 
+V1.7.16
+1. Add multiple devices to splicing and use related interfaces
+2, repair the HPS3D_RemoveDevice () interface
+
 V1.7.15
 1. Add a heartbeat detection mechanism to determine whether the communication is abnormally disconnected.
 

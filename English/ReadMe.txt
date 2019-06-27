@@ -78,3 +78,12 @@ V1.7.15
 1. Add a heartbeat detection mechanism to determine whether the communication is abnormally disconnected.
 HPS3D_SetKeepAliveConfig(...): Set the heartbeat detection time. After the setting is completed, the heartbeat packet must be sent to the sensor periodically. Otherwise, the device will stop working automatically after the timeout. After the configuration of this interface is completed, the heartbeat must be sent before continuous measurement. The package uses the following interface for the sensor
 HPS3D_SendKeepAlive(...) : Set keep-alive, send keep-alive command within the set detection time to ensure that the sensor continues to work; after sending this command, the corresponding return packet KEEP_ALIVE_PACKET will be generated in the callback function, and the package can be returned twice by calculation. Time difference to detect if a heartbeat exists
+
+V1.7.16
+1. Add multiple devices to splicing and use related interfaces
+2, repair the HPS3D_RemoveDevice () interface
+
+
+
+
+
