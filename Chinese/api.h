@@ -26,7 +26,7 @@
 *---------------------------------------------------------------------
 * <Version>		| <Description>
 *---------------------------------------------------------------------
-* V1.7.16		| TODO
+* V1.7.17		| TODO
 *---------------------------------------------------------------------
 
 **********************************************************************/
@@ -579,7 +579,6 @@ typedef enum
  * @retval	成功返回 RET_OK
  */
 extern RET_StatusTypeDef HPS3D_SetRunMode(HPS3D_HandleTypeDef *handle);
-
 /**
  * @brief	得到设备地址
  * @param[out]  handle->DeviceAddr  输出设备地址
@@ -1413,7 +1412,7 @@ extern RET_StatusTypeDef HPS3D_SpliceLoadROIConfig(const char* fileName);
 extern RET_StatusTypeDef HPS3D_SpliceProcessFunc(PerPointCloudDataTypeDef *SplicePointCloudBuffer,uint8_t id,PerPointCloudDataTypeDef point_cloud_data[MAX_PIX_NUM],FullRoiDataTypeDef FullRoiData[ROI_NUM]);
 
 /**
- * @brief	设置拼接设备数量
+ * @brief	设置拼接后敏感区域当前组ID
  * @param[in] 组ID 
  * @note 该ID值范围请参考ROI_GROUP_NUMBER
  * @see ROI_GROUP_NUMBER
@@ -1423,14 +1422,56 @@ extern RET_StatusTypeDef HPS3D_SpliceProcessFunc(PerPointCloudDataTypeDef *Splic
 extern RET_StatusTypeDef HPS3D_SpliceSetCurrentGroupID(uint8_t groupID);
 
 /**
- * @brief	获取当前拼接设备数量
+ * @brief	获取拼接后敏感区域当前组ID
  * @param
  * @note
  * @see
  * @code
- * @retval	返回无
+ * @retval	返回当前敏感区域组ID
  */
-extern RET_StatusTypeDef HPS3D_SpliceSetCurrentGroupID(uint8_t groupID);
+extern uint8_t HPS3D_SpliceGetCurrentGroupID(void);
+
+/**
+ * @brief	设置最大积分时间
+ * @param[in] max_integration_time
+ * @note
+ * @see
+ * @code
+ * @retval	成功返回RET_OK
+ */
+extern RET_StatusTypeDef HPS3D_SetMaxIntegTime(HPS3D_HandleTypeDef *handle, uint32_t max_integration_time);
+
+/**
+ * @brief	获取最大积分时间
+ * @param[out] max_integration_time
+ * @note
+ * @see
+ * @code
+ * @retval	成功返回RET_OK
+ */
+extern RET_StatusTypeDef HPS3D_GetMaxIntegTime(HPS3D_HandleTypeDef *handle, uint32_t *max_integration_time);
+
+/**
+ * @brief	设置最小信号幅值
+ * @param[in] minAmplitude
+ * @note
+ * @see
+ * @code
+ * @retval	成功返回RET_OK
+ */
+extern RET_StatusTypeDef HPS3D_SetMinAmpliude(HPS3D_HandleTypeDef *handle, uint32_t minAmplitude);
+
+/**
+ * @brief	获取最小信号幅值
+ * @param[out] minAmplitude
+ * @note
+ * @see
+ * @code
+ * @retval	成功返回RET_OK
+ */
+extern RET_StatusTypeDef HPS3D_GetMinAmplitude(HPS3D_HandleTypeDef *handle, uint32_t *minAmplitude);
+
+
 
 #ifdef __cplusplus
 }

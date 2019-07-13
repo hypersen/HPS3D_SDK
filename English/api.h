@@ -1414,14 +1414,56 @@ extern RET_StatusTypeDef HPS3D_SpliceProcessFunc(PerPointCloudDataTypeDef *Splic
 extern RET_StatusTypeDef HPS3D_SpliceSetCurrentGroupID(uint8_t groupID);
 
 /**
- * @brief Get the current number of splicing devices
- * @param
- * @note
- * @see
- * @code
- * @retval returns none
- */
-extern RET_StatusTypeDef HPS3D_SpliceSetCurrentGroupID(uint8_t groupID);
+  * @brief Get the current number of splicing devices
+  * @param
+  * @note
+  * @see
+  * @code
+  * @retval returns none
+  */
+extern uint8_t HPS3D_SpliceGetCurrentGroupID(void);
+
+
+/**
+  * @brief sets the maximum integration time
+  * @param[in] max_integration_time
+  * @note
+  * @see
+  * @code
+  * @retval returns RET_OK successfully
+  */
+extern RET_StatusTypeDef HPS3D_SetMaxIntegTime(HPS3D_HandleTypeDef *handle, uint32_t max_integration_time);
+
+/**
+  * @brief Get the maximum integration time
+  * @param[out] max_integration_time
+  * @note
+  * @see
+  * @code
+  * @retval returns RET_OK successfully
+  */
+extern RET_StatusTypeDef HPS3D_GetMaxIntegTime(HPS3D_HandleTypeDef *handle, uint32_t *max_integration_time);
+
+/**
+  * @brief sets the minimum signal amplitude
+  * @param[in] minAmplitude
+  * @note
+  * @see
+  * @code
+  * @retval returns RET_OK successfully
+  */
+extern RET_StatusTypeDef HPS3D_SetMinAmpliude(HPS3D_HandleTypeDef *handle, uint32_t minAmplitude);
+
+/**
+  * @brief Get the minimum signal amplitude
+  * @param[out] minAmplitude
+  * @note
+  * @see
+  * @code
+  * @retval returns RET_OK successfully
+  */
+extern RET_StatusTypeDef HPS3D_GetMinAmplitude(HPS3D_HandleTypeDef *handle, uint32_t *minAmplitude);
+
 
 #ifdef __cplusplus
 }
