@@ -1,6 +1,11 @@
 # HPS3D_SDK
 The current project includes Demo programs under Linux, ros, windows and other platforms. For details, please refer to HPS-3D160 Solid-state Depth camera SDK manual.
 
+V1.7.17
+1. Add settings / get the maximum integration time, set / get the minimum signal amplitude interface
+HPS3D_SetMaxIntegTime(...)/ HPS3D_GetMaxIntegTime(...)
+HPS3D_SetMinAmpliude(...)/HPS3D_GetMinAmplitude(...)
+
 V1.7.16
 1. Add multiple devices to splicing and use related interfaces
 2, repair the HPS3D_RemoveDevice () interface
