@@ -5,6 +5,10 @@ Hypersen Technologies Copyright © 2019 Version 13.7.19
 ************************************************** *****************************
 The HPS3D_SDK update is as follows:
 
+V1.7.18
+1. Fix point cloud data mirroring function HPS3D_SetPointCloudMirrorType(...);
+2. Add the device serial number interface HPS3D_GetSerialNumber();
+
 V1.7.17
 1. Add settings / get the maximum integration time, set / get the minimum signal amplitude interface
 HPS3D_SetMaxIntegTime(...)/ HPS3D_GetMaxIntegTime(...)

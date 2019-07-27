@@ -34,7 +34,7 @@ RET_StatusTypeDef(*SingleMeasurement)(HPS3D_HandleTypeDef *handle) = NULL;
 uint32_t (*GetDeviceList)(uint8_t * dirPath, uint8_t *prefix, uint8_t fileName[DEV_NUM][DEV_NAME_SIZE]) = NULL;
 RET_StatusTypeDef (*SetPointCloudEn)(bool en) = NULL;
 bool (*GetPointCloudEn)(void) = NULL;
-RET_StatusTypeDef (*SetEthernetServerInfo)(HPS3D_HandleTypeDef *handle,uint8_t *serverIP,uint16_t serverPort) = NULL;
+RET_StatusTypeDef (*SetEthernetServerInfo)(HPS3D_HandleTypeDef *handle,char *serverIP,uint16_t serverPort) = NULL;
 RET_StatusTypeDef (*SavePlyFile)(uint8_t *filename,PointCloudDataTypeDef point_cloud_data) = NULL;
 RET_StatusTypeDef (*SetMeasurePacketType)(MeasurePacketTypeDef type) = NULL;
 RET_StatusTypeDef (*SelectROIGroup)(HPS3D_HandleTypeDef *handle, uint8_t group_id) = NULL;
@@ -76,7 +76,7 @@ MainWindow::MainWindow(QWidget *parent) :
     /*Set/get point cloud enable conversion*/
     SetPointCloudEn = (RET_StatusTypeDef(*)(bool en))GetProcAddress(module, "HPS3D_SetPointCloudEn");
     SavePlyFile = (RET_StatusTypeDef (*)(uint8_t *filename,PointCloudDataTypeDef point_cloud_data))GetProcAddress(module, "HPS3D_SavePlyFile");;
-    SetEthernetServerInfo = (RET_StatusTypeDef (*)(HPS3D_HandleTypeDef *,uint8_t *,uint16_t))GetProcAddress(module, "HPS3D_SetEthernetServerInfo");
+    SetEthernetServerInfo = (RET_StatusTypeDef (*)(HPS3D_HandleTypeDef *,char *,uint16_t))GetProcAddress(module, "HPS3D_SetEthernetServerInfo");
     /*Set MeasureData Type*/
     SetMeasurePacketType = (RET_StatusTypeDef (*)(MeasurePacketTypeDef type))GetProcAddress(module, "HPS3D_SetMeasurePacketType");
     /*Select Group ROI id*/
@@ -153,42 +153,9 @@ void * UserGetDataFromSensor(HPS3D_HandleTypeDef *handle,AsyncIObserver_t *event
                     dist_average = event->MeasureData.simple_roi_data[0].distance_average;
                     break;
                 case FULL_ROI_PACKET:
-                    showImagFlag = true;
-                    if(event->MeasureData.full_roi_data[0].threshold_state !=0 && event->MeasureData.full_roi_data[0].threshold_state != upStatus)
-                    {
-                        RET_StatusTypeDef ret = RET_OK;
-                        HPS_handle.RunMode = RUN_IDLE;
-                        SetRunMode(&HPS_handle);
-                        ret = SelectROIGroup(&HPS_handle,1);
-                        if(RET_OK != ret)
-                        {
-                            printf("HPS3D_SelectROIGroup failed\n");
-                        }
-                        else
-                        {
-                            ret = SingleMeasurement(&HPS_handle);
-                            if(RET_OK != ret)
-                            {
-                                printf("HPS3D_SingleMeasurement failed\n");
-                            }
-                            /*显示当前状态*/
-
-                            dist_average = HPS_handle.MeasureData.full_roi_data->distance_average;
-                            dist_img = CharToImage((uint16_t *)HPS_handle.MeasureData.full_roi_data->distance,dist_average,160,60);
-
-                            /*切换ROI分组*/
-                            ret = SelectROIGroup(&HPS_handle,0);
-                            if(RET_OK != ret)
-                            {
-                                printf("HPS3D_SelectROIGroup failed\n");
-                            }
-                            HPS_handle.RunMode = RUN_CONTINUOUS;
-                            SetRunMode(&HPS_handle);
-                        }
-                    }
-                    upStatus = event->MeasureData.full_roi_data[0].threshold_state;
-                   // dist_average = event->MeasureData.full_roi_data[0].distance_average;
-                   // dist_img = CharToImage(FullRoiDistance,dist_average,160,60);
+                    showImagFlag = true;                 
+                    dist_average = event->MeasureData.full_roi_data[0].distance_average;
+                    dist_img = CharToImage(FullRoiDistance,dist_average,160,60);
                     break;
                 case FULL_DEPTH_PACKET:
                      dist_average = event->MeasureData.full_depth_data->distance_average;

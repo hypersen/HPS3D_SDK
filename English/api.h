@@ -560,9 +560,10 @@ typedef struct
 /*Point cloud data mirror*/
 typedef enum
 {
-	MORROR_DISABLE = 0X0,
+	MIRROR_DISABLE = 0X0,
 	MIRROR_HORIZONTAL = 0X1,
 	MIRROR_VERTICLA = 0X2,
+	MIRROR_HORIZONTAL_VERTICLA = 0X3,
 }PointCloudImageMirrorTypeDef;
 
 /**************************************Function interface*************************************/
@@ -1464,7 +1465,18 @@ extern RET_StatusTypeDef HPS3D_SetMinAmpliude(HPS3D_HandleTypeDef *handle, uint3
   */
 extern RET_StatusTypeDef HPS3D_GetMinAmplitude(HPS3D_HandleTypeDef *handle, uint32_t *minAmplitude);
 
-
+/**
+ * @brief	Get Serial Number
+ * @param[in]	handle   
+ * @param[out]	info[64] 
+ * @note
+ * @see
+ * @code
+ *
+ * @retval 成功返回 RET_OK
+ */
+ extern RET_StatusTypeDef HPS3D_GetSerialNumber(HPS3D_HandleTypeDef *handle, uint8_t *info);
+ 
 #ifdef __cplusplus
 }
 #endif

@@ -26,7 +26,7 @@
 *---------------------------------------------------------------------
 * <Version>		| <Description>
 *---------------------------------------------------------------------
-* V1.7.17		| TODO
+* V1.7.18		| TODO
 *---------------------------------------------------------------------
 
 **********************************************************************/
@@ -44,8 +44,8 @@ extern "C"  /*C++*/
 
 
 #ifdef _WIN32
-	#include <windows.h>
 	#include <winsock2.h>
+	#include <windows.h>
 #else
 	#include <sys/socket.h>
 	#include <netinet/in.h>
@@ -563,9 +563,10 @@ typedef struct
 /*点云数据镜像*/
 typedef enum
 {
-	MORROR_DISABLE = 0X0,
+	MIRROR_DISABLE = 0X0,
 	MIRROR_HORIZONTAL = 0X1,
 	MIRROR_VERTICLA = 0X2,
+	MIRROR_HORIZONTAL_VERTICLA = 0X3,
 }PointCloudImageMirrorTypeDef;
 
 /**************************************函数接口*************************************/
@@ -1471,7 +1472,17 @@ extern RET_StatusTypeDef HPS3D_SetMinAmpliude(HPS3D_HandleTypeDef *handle, uint3
  */
 extern RET_StatusTypeDef HPS3D_GetMinAmplitude(HPS3D_HandleTypeDef *handle, uint32_t *minAmplitude);
 
-
+/**
+ * @brief	获取设备序列号
+ * @param[in]	handle       设备地址
+ * @param[out]	info[64]           序列号信息
+ * @note
+ * @see
+ * @code
+ *
+ * @retval 成功返回 RET_OK
+ */
+ extern RET_StatusTypeDef HPS3D_GetSerialNumber(HPS3D_HandleTypeDef *handle, uint8_t *info);
 
 #ifdef __cplusplus
 }

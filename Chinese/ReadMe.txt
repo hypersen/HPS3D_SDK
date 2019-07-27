@@ -5,6 +5,10 @@ Hypersen Technologies Copyright ©  2019                  Version 20.3.19
 *******************************************************************************
 HPS3D_SDK 更新内容如下:
 
+V1.7.18
+1、修复点云数据镜像功能 HPS3D_SetPointCloudMirrorType(...);
+2、加入获取设备序列号接口 HPS3D_GetSerialNumber();
+
 V1.7.17
 1、加入设置/获取最大积分时间，设置/获取最小信号幅值接口
 HPS3D_SetMaxIntegTime(...)/	HPS3D_GetMaxIntegTime(...)   
