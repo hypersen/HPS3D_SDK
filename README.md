@@ -1,6 +1,10 @@
 # HPS3D_SDK
 The current project includes Demo programs under Linux, ros, windows and other platforms. For details, please refer to HPS-3D160 Solid-state Depth camera SDK manual.
 
+V1.7.18
+1. Fix point cloud data mirroring function HPS3D_SetPointCloudMirrorType(...);
+2. Add the device serial number interface HPS3D_GetSerialNumber();
+
 V1.7.17
 1. Add settings / get the maximum integration time, set / get the minimum signal amplitude interface
 HPS3D_SetMaxIntegTime(...)/ HPS3D_GetMaxIntegTime(...)
