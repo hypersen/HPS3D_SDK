@@ -1,0 +1,2 @@
+hps_camera
+-DCATKIN_DEVEL_PREFIX=/home/kevin/eclipse-workspace/HPS3D160-SDK/demo/HPS3D160-ROS_Demo/devel -DCMAKE_INSTALL_PREFIX=/home/kevin/eclipse-workspace/HPS3D160-SDK/demo/HPS3D160-ROS_Demo/install -G Unix Makefiles
