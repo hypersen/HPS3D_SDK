@@ -1,4 +1,4 @@
-﻿///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 //                                                                          //
 // Copyright (c) 2017-2021 Hypersen Technology Co. Ltd.						//
 // All rights reserved.                                                     //
@@ -24,9 +24,9 @@ extern "C"  /*C++*/
 #ifdef _WIN32 /*windows*/
 
 #ifndef _HPS3D_API
-	#define _HPS3D_API  _declspec(dllexport)
+	#define _HPS3D_API extern  _declspec(dllexport)
 	#else
-	#define _HPS3D_API  _declspec(dllimport)
+	#define _HPS3D_API  extern _declspec(dllimport)
 	#endif
 
 
@@ -90,6 +90,17 @@ _HPS3D_API int			__stdcall HPS3DAPI_EthernetConnectDevice(__IN char* controllerI
  * @retval	     成功返回 1
  */
 _HPS3D_API int			__stdcall HPS3DAPI_CloseDevice(__IN int handle);
+
+
+/**
+ * @brief	     以太网设备keep alive 时间
+ * @param        handle 设备ID
+ * @param        keepTime_ms  保活时间，单位ms
+ * @see
+ * @note
+ * @retval	     成功返回 1
+ */
+_HPS3D_API int			__stdcall HPS3DAPI_SetEthernetKeepAlive(__IN int handle, __IN int keepTime_ms);
 
 /**
  * @brief	     设备连接状态
@@ -272,6 +283,16 @@ _HPS3D_API int		    __stdcall HPS3DAPI_SetDistanceOffset(__IN int handle, __IN i
  * @retval	     成功返回1
  */
 _HPS3D_API int		    __stdcall HPS3DAPI_SetOpticalPathCalibration(__IN int handle, __IN int enbale);
+
+/**
+ * @brief	     开启/关闭边缘滤波
+ * @param		 handle 设备ID
+ * @param		 enbale 1 表示开启  0表示关闭
+ * @see
+ * @note         可滤除部分边缘噪声
+ * @retval	     成功返回1
+ */
+_HPS3D_API int		    __stdcall HPS3DAPI_SetEdgeFilterEnable(__IN int handle, __IN int enbale);
 
 #endif  //__HPS3D_BASE_IF_H_
 

@@ -59,6 +59,7 @@ typedef struct
 	int cur_multiCamera_code;      /*当前多机编号*/
 	int dist_offset;               /*当前多机编号*/
 	int optical_path_calibration;  /*光程补偿开启状态*/
+	int edge_filter_enable;       /*边缘滤波开启状态*/
 }HPS3D_DeviceSettings_t;
 
 /*平滑滤波器的类型*/
@@ -184,6 +185,7 @@ HPS3D_StatusTypeDef	HPS3D_EthernetConnectDevice(__IN char* controllerIp, __IN ui
 */
 HPS3D_StatusTypeDef	HPS3D_CloseDevice(__IN int handle);
 	
+
 /**
 * @brief	     设备连接状态
 * @param        handle 设备ID
@@ -377,6 +379,16 @@ HPS3D_StatusTypeDef	HPS3D_SetDistanceOffset(__IN int handle, __IN int16_t offset
 */
 HPS3D_StatusTypeDef HPS3D_SetOpticalPathCalibration(__IN int handle, __IN bool enbale);
 
+/**
+ * @brief	     开启/关闭边缘滤波
+ * @param		 handle 设备ID
+ * @param		 enbale 1 表示开启  0表示关闭
+ * @see
+ * @note         可滤除部分边缘噪声
+ * @retval	     成功返回1
+ */
+
+HPS3D_StatusTypeDef HPS3D_SetEdgeFilterEnable(__IN int handle, __IN bool enbale);
 /**
 * @brief	     为测量结果缓冲区分配内存
 * @param		 data

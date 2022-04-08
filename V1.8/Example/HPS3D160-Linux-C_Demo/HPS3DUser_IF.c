@@ -1,4 +1,4 @@
-﻿#include "HPS3DUser_IF.h"
+#include "HPS3DUser_IF.h"
 
 #ifdef _WIN32 /*windows*/
 
@@ -208,11 +208,14 @@ int HPS3D_ConvertToMeasureData(__OUT uint8_t *data, __IN HPS3D_MeasureData_t *re
 
 			int pixNum = resultData->full_roi_data[i].pixel_number;
 			int j = 0;
-			for (j = 0; j < pixNum; j++)
+			for (j = 0; j < resultData->full_roi_data[i].pixel_number; j++)
 			{
 				resultData->full_roi_data[i].distance[j] = data[len++] << 8;
 				resultData->full_roi_data[i].distance[j] += data[len++];
 			}
+
+			
+			
 		}
 	}
 	else if (Type == HPS3D_SIMPLE_DEPTH_EVEN)
@@ -422,7 +425,7 @@ HPS3D_StatusTypeDef HPS3D_SaveSettings(__IN int handle)
 */
 HPS3D_StatusTypeDef HPS3D_SetDistanceFilterConf(__IN int handle, __IN bool enable, __IN float K)
 {
-	return (HPS3D_StatusTypeDef)HPS3DAPI_SetDistanceFilterConf(handle, enable ?1:0, K);
+	return (HPS3D_StatusTypeDef)HPS3DAPI_SetDistanceFilterConf(handle, enable==true ?1:0, K);
 }
 
 /**
@@ -463,6 +466,19 @@ HPS3D_StatusTypeDef HPS3D_SetDistanceOffset(__IN int handle, __IN int16_t offset
 HPS3D_StatusTypeDef HPS3D_SetOpticalPathCalibration(__IN int handle, __IN bool enbale)
 {
 	return (HPS3D_StatusTypeDef)HPS3DAPI_SetOpticalPathCalibration(handle, enbale);
+}
+
+/**
+ * @brief	     开启/关闭边缘滤波
+ * @param		 handle 设备ID
+ * @param		 enbale 1 表示开启  0表示关闭
+ * @see
+ * @note         可滤除部分边缘噪声
+ * @retval	     成功返回1
+ */
+HPS3D_StatusTypeDef HPS3D_SetEdgeFilterEnable(__IN int handle, __IN bool enbale)
+{
+	return (HPS3D_StatusTypeDef)HPS3DAPI_SetEdgeFilterEnable(handle, enbale);
 }
 
 /**
