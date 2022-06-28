@@ -1,0 +1,8 @@
+prefix=/home/kevin/eclipse-workspace/HPS3D160-SDK/demo/HPS3D160-ROS_Demo/install
+
+Name: hps_camera
+Description: Description of hps_camera
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/kevin/eclipse-workspace/HPS3D160-SDK/demo/HPS3D160-ROS_Demo/install/lib 
+Requires: 
