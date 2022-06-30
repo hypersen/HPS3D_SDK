@@ -35,6 +35,18 @@ HPS3D_StatusTypeDef HPS3D_EthernetConnectDevice(__IN char* controllerIp, __IN ui
 }
 
 /**
+* @brief	     Ethernet设备重连
+* @param		 deviceHandler 设备ID
+* @see
+* @note
+* @retval	     成功返回 HPS3D_RET_OK
+*/
+HPS3D_StatusTypeDef HPS3D_EthternetReconnection(__IN int handle)
+{
+	return (HPS3D_StatusTypeDef)HPS3DAPI_EthernetReconnectDevice(handle);
+}
+
+/**
 * @brief	     关闭设备
 * @param        handle 设备ID
 * @see
@@ -587,3 +599,5 @@ HPS3D_StatusTypeDef HPS3D_MeasureDataFree(__IN HPS3D_MeasureData_t *data)
 	} while (0);
 	return ret;
 }
+
+
