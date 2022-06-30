@@ -83,6 +83,15 @@ _HPS3D_API int			__stdcall HPS3DAPI_USBConnectDevice(__IN char* portName, __OUT 
 _HPS3D_API int			__stdcall HPS3DAPI_EthernetConnectDevice(__IN char* controllerIp, __IN uint16_t controllerPort, __OUT int* deviceHandler);
 
 /**
+ * @brief	     Ethernet设备重连
+ * @param		 deviceHandler 设备ID
+ * @see
+ * @note
+ * @retval	     成功返回 1
+ */
+_HPS3D_API int			__stdcall HPS3DAPI_EthernetReconnectDevice(__IN int deviceHandler);
+
+/**
  * @brief	     关闭设备
  * @param        handle 设备ID
  * @see

@@ -20,7 +20,7 @@ extern "C" {
 #endif
 #include <stdint.h>
 #include <stdbool.h>
-#include "../BasicInterface/HPS3DBase_IF.h"
+#include "HPS3DBase_IF.h"
 
 
 /*函数返回的结果*/
@@ -175,7 +175,16 @@ HPS3D_StatusTypeDef	HPS3D_USBConnectDevice(__IN char* portName, __OUT int* devic
 * @retval	     成功返回 HPS3D_RET_OK
 */
 HPS3D_StatusTypeDef	HPS3D_EthernetConnectDevice(__IN char* controllerIp, __IN uint16_t controllerPort, __OUT int* deviceHandler);
-	
+
+/**
+* @brief	     Ethernet设备连接
+* @param		 deviceHandler 设备ID
+* @see
+* @note
+* @retval	     成功返回 HPS3D_RET_OK
+*/
+HPS3D_StatusTypeDef HPS3D_EthternetReconnection(__IN int handle);
+
 /**
 * @brief	     关闭设备
 * @param        handle 设备ID
