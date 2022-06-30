@@ -11,8 +11,24 @@
 #include <math.h>
 
 #include "HPS3DUser_IF.h"
+
+
 int g_handle = -1;
+int m_handle[8] = {-1};
 static HPS3D_MeasureData_t g_measureData;
+static int FPS[8] = {0};
+
+static void PrintResultFPS(int handle,HPS3D_EventType_t type, HPS3D_MeasureData_t data)
+{
+	switch (type)
+	{
+		case HPS3D_FULL_DEPTH_EVEN:
+			FPS[handle]++;
+			break;
+		default:
+			break;
+	}
+}
 
 static bool PrintResultData(HPS3D_EventType_t type, HPS3D_MeasureData_t data)
 {
@@ -20,7 +36,7 @@ static bool PrintResultData(HPS3D_EventType_t type, HPS3D_MeasureData_t data)
 	int i = 0;
 	switch (type)
 	{
-	case HPS3D_SIMPLE_ROI_EVEN: 
+	case HPS3D_SIMPLE_ROI_EVEN: //简单ROI数据包  不含每个点的深度数据
 		printf("*************  HPS3D_SIMPLE_ROI_EVEN  ********************\n");
 		num = data.simple_roi_data[0].roi_num;
 		int i = 0;
@@ -34,7 +50,7 @@ static bool PrintResultData(HPS3D_EventType_t type, HPS3D_MeasureData_t data)
 			printf("    =====================================\n\n");
 		}
 		break;
-	case HPS3D_FULL_ROI_EVEN: 
+	case HPS3D_FULL_ROI_EVEN: //完整ROI数据包
 		printf("*************  HPS3D_FULL_ROI_EVEN  ********************\n");
 		num = data.full_roi_data[0].roi_num;
 		for (i = 0; i < num; i++)
@@ -50,14 +66,14 @@ static bool PrintResultData(HPS3D_EventType_t type, HPS3D_MeasureData_t data)
 			printf("    =====================================\n\n");
 		}
 		break;
-	case HPS3D_SIMPLE_DEPTH_EVEN: 
+	case HPS3D_SIMPLE_DEPTH_EVEN: //简单深度数据包，不含每个点距离及点云数据
 		printf("*************  HPS3D_SIMPLE_DEPTH_EVEN  ********************\n");
 		printf(" distance_average:%d\n", data.simple_depth_data.distance_average);
 		printf(" distance_min    :%d\n", data.simple_depth_data.distance_min);
 		printf(" saturation_count:%d\n", data.simple_depth_data.saturation_count);
 		printf("==========================================================\n\n");
 		break;
-	case HPS3D_FULL_DEPTH_EVEN: 
+	case HPS3D_FULL_DEPTH_EVEN: //完整深度图数据包，含点云数据
 		printf("*************  HPS3D_FULL_DEPTH_EVEN    ********************\n");
 		printf("distance_average:%d\n", data.full_depth_data.distance_average);
 		printf("distance_min    :%d\n", data.full_depth_data.distance_min);
@@ -80,30 +96,38 @@ static bool PrintResultData(HPS3D_EventType_t type, HPS3D_MeasureData_t data)
 	return true;
 }
 
-
+static bool isReconnectEnable = true;
+static bool isReconnect = false;
 static void EventCallBackFunc(int handle, int eventType, uint8_t *data,int dataLen, void *userPara)
 {
-	
-
 	switch ((HPS3D_EventType_t)eventType)
 	{
-		case HPS3D_SIMPLE_ROI_EVEN:
-		case HPS3D_FULL_ROI_EVEN:
-		case HPS3D_FULL_DEPTH_EVEN:
+		//测量数据通知事件
+		case HPS3D_SIMPLE_ROI_EVEN:	
+		case HPS3D_FULL_ROI_EVEN:	
+		case HPS3D_FULL_DEPTH_EVEN:	
 		case HPS3D_SIMPLE_DEPTH_EVEN:
+			printf("handle:%d!\n", handle);
 			HPS3D_ConvertToMeasureData(data,&g_measureData, (HPS3D_EventType_t)eventType);
 			PrintResultData((HPS3D_EventType_t)eventType, g_measureData);
 			break;
-		case HPS3D_SYS_EXCEPTION_EVEN: 
+		case HPS3D_SYS_EXCEPTION_EVEN: /*系统异常通知事件*/
 			printf("SYS ERR :%s\n", data);
+
 			break;
-		case HPS3D_DISCONNECT_EVEN: 
+		case HPS3D_DISCONNECT_EVEN: /*连接异常断开通知事件*/
 			printf("Device disconnected!\n");
-			HPS3D_CloseDevice(handle);
+			//sleep(10);
+			//HPS3D_StopCapture(handle);
+			//sleep(10);
+			if(isReconnectEnable && isReconnect == false)
+			{
+				isReconnect = true;
+			}
 			break;
-		case HPS3D_NULL_EVEN: 
+		case HPS3D_NULL_EVEN:  //空事件通知
 		default:
-			break;
+			break;	
 	}
 }
 
@@ -112,99 +136,106 @@ void signal_handler(int signo)
 	HPS3D_StopCapture(g_handle);
 	HPS3D_CloseDevice(g_handle);
 	printf("Device disconnected!\n\n");
-    exit(0);
+	exit(0);
 }
 
 int main()
 {
-	printf("HPS3D160 C/C++ Demo (Linux)\n\n");
+	printf("HPS3D160 C/C++ Demo (Visual Statudio 2017)\n\n");
 
 	printf("SDK Ver:%s\n", HPS3D_GetSDKVersion());
-	if(signal(SIGINT,signal_handler) == SIG_ERR)
-	{
-		printf("sigint error");
-	}
 
-	HPS3D_StatusTypeDef ret = HPS3D_RET_ERROR;
+	int handle = -1;
+	HPS3D_StatusTypeDef ret = HPS3D_RET_OK;
 	do
 	{
 		//初始化内存
-	        ret = HPS3D_MeasureDataInit(&g_measureData);
+		ret = HPS3D_MeasureDataInit(&g_measureData);
 		if (ret != HPS3D_RET_OK)
 		{
 			printf("MeasureDataInit failed,Err:%d\n", ret);
 			break;
 		}
-		//ret = HPS3D_USBConnectDevice((char *)"/dev/ttyACM0",&handle);
-		ret = HPS3D_EthernetConnectDevice((char *)"192.168.0.10", 12345, &g_handle);
+		printf("选择设备类型: HPS3D160-U(1)  HPS3D160-L(2)  退出(其他)\n");
+		char sel = getchar();
+		getchar(); //过滤回车
+		if (sel == '1')
+		{
+			
+		}
+		else if (sel == '2')
+		{
+			ret = HPS3D_EthernetConnectDevice((char *)"192.168.0.123", 12345, &handle);
+
+			ret = HPS3D_EthernetConnectDevice((char *)"192.168.0.10", 12345, &handle);
+		}
+		else
+		{
+			return 0;
+		}
 		if (ret != HPS3D_RET_OK)
 		{
-			printf("connect failed,Err:%d\n", ret);
+			printf("设备连接失败,Err:%d\n", ret);
 			break;
 		}
-		printf("Dev Ver:%s\n", HPS3D_GetDeviceVersion(g_handle));
-		printf("SN:%s\n\n", HPS3D_GetSerialNumber(g_handle));
+		printf("设备版本为:%s\n", HPS3D_GetDeviceVersion(0));
+		printf("设备序列号:%s\n\n", HPS3D_GetSerialNumber(0));
+		if (handle == 1)
+		{
+			printf("设备版本为:%s\n", HPS3D_GetDeviceVersion(1));
+			printf("设备序列号:%s\n\n", HPS3D_GetSerialNumber(1));
+		}
 
-		HPS3D_RegisterEventCallback(EventCallBackFunc, NULL);
+		//注册事件回调函数，用于接收连续返回数据包，及调用异常等;
+		ret= HPS3D_RegisterEventCallback(EventCallBackFunc, NULL);
+		if (ret != HPS3D_RET_OK)
+		{
+			printf("注册回调函数失败,Err:%d\n", ret);
+			break;
 
+		}
 
 		HPS3D_DeviceSettings_t settings;
-		ret = HPS3D_ExportSettings(g_handle, &settings);
+		ret = HPS3D_ExportSettings(handle, &settings);
 		if (ret != HPS3D_RET_OK)
 		{
-			printf("ExportSettings,Err:%d\n", ret);
+			printf("导出设备参数失败,Err:%d\n", ret);
 			break;
 		}
-		printf("resolution:%d X %d\n", settings.max_resolution_X, settings.max_resolution_Y);
-		printf("max_roi_group_number:%d  cur_group_id：%d\n", settings.max_roi_group_number, settings.cur_group_id);
-		printf("max_roi_number:%d\n", settings.max_roi_number);
-		printf("max_multiCamera_code:%d，cur_multiCamera_code:%d\n", settings.max_multiCamera_code, settings.cur_multiCamera_code);
-		printf("user_id：%d\n", settings.user_id);
-		printf("optical_path_calibration: %d\n\n", settings.optical_path_calibration);
+		printf("分辨率为:%d X %d\n", settings.max_resolution_X, settings.max_resolution_Y);
+		printf("支持最大ROI分组数量为:%d  当前ROI分组：%d\n", settings.max_roi_group_number, settings.cur_group_id);
+		printf("支持最大ROI数量为:%d\n", settings.max_roi_number);
+		printf("支持最大多机编号为:%d，当前设备多机编号:%d\n", settings.max_multiCamera_code, settings.cur_multiCamera_code);
+		printf("当前设备用户ID为：%d\n", settings.user_id);
+		printf("光路补偿是否开启: %d\n\n", settings.optical_path_calibration);
 
 		bool isContinuous = false;
+		int count = 0;
+		HPS3D_StartCapture(handle);
 		do
 		{
-			printf("select capture mode: SingleCapture(1)  ContinuousCapture(2)  Exit(...)\n");
-			int sel = 0;
-			scanf("%d", &sel);
-			if (sel == 1)
+			if (isReconnect)
 			{
-				HPS3D_EventType_t type = HPS3D_NULL_EVEN;
-				ret = HPS3D_SingleCapture(g_handle, &type, &g_measureData);
-				if (ret != HPS3D_RET_OK)
+				//sleep(5);
+				ret = (HPS3D_StatusTypeDef)HPS3D_EthternetReconnection(handle);
+				if (ret == HPS3D_RET_OK)
 				{
-					printf("SingleCapture failed,Err:%d\n", ret);
-					break;
+					HPS3D_StartCapture(handle);
+					printf("重连成功:设备 %d\n", handle);
+					isReconnect = false;
 				}
-				PrintResultData(type, g_measureData);
 			}
-			else if (sel == 2)
-			{
-				isContinuous = true;
-				HPS3D_StartCapture(g_handle);
-				break;
-			}
-			else
-			{
-				isContinuous = false;
-				break;
-			}
+			sleep(1);
+						
 		} while (1);
 
-		if (isContinuous)
-		{
-			while (1)
-			{
-				usleep(1000);
-			}
-		}
+
 	} while (0);
 
-	HPS3D_StopCapture(g_handle);
-	HPS3D_CloseDevice(g_handle);
+	HPS3D_StopCapture(handle);
+	HPS3D_CloseDevice(handle);
 	HPS3D_MeasureDataFree(&g_measureData);
-	return 0;
+	system("pause");
 }
 
 
