@@ -20,7 +20,7 @@ extern "C" {
 #endif
 #include <stdint.h>
 #include <stdbool.h>
-#include "HPS3DBase_IF.h"
+#include "../BasicInterface/HPS3DBase_IF.h"
 
 
 /*函数返回的结果*/
