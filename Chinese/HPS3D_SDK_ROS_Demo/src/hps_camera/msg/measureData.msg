@@ -1,1 +1,0 @@
-hps_camera/PointCloudData point_cloud_data

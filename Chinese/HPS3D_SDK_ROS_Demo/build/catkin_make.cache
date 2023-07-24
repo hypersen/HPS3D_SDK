@@ -1,2 +1,0 @@
-hps_camera
--DCATKIN_DEVEL_PREFIX=/mnt/hgfs/UbuntuShare/HPS3D_SDK_ROS_DEMO/devel -DCMAKE_INSTALL_PREFIX=/mnt/hgfs/UbuntuShare/HPS3D_SDK_ROS_DEMO/install -G Unix Makefiles

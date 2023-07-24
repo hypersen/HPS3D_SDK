@@ -1,1 +1,0 @@
-uint16 distance_average
